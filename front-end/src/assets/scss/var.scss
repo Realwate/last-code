@@ -1,0 +1,21 @@
+/* 改变主题色变量 */
+// $--color-primary: #1168A6;
+
+$--color-black: #000 !default;
+$--color-white: #fff !default;
+
+$--color-primary: #0084FF;
+$--color-primary-dark-1: mix($--color-black, $--color-primary, 20%) !default; /* 53a8ff */
+$--color-primary-dark-2: mix($--color-black, $--color-primary, 20%) !default; /* 53a8ff */
+$--color-primary-dark-5: mix($--color-black, $--color-primary, 50%) !default; /* 66b1ff */
+
+$--color-primary-light-1: mix($--color-white, $--color-primary, 10%) !default; /* 53a8ff */
+$--color-primary-light-2: mix($--color-white, $--color-primary, 20%) !default; /* 66b1ff */
+$--color-primary-light-3: mix($--color-white, $--color-primary, 30%) !default; /* 79bbff */
+$--color-primary-light-4: mix($--color-white, $--color-primary, 40%) !default; /* 8cc5ff */
+$--color-primary-light-5: mix($--color-white, $--color-primary, 50%) !default; /* a0cfff */
+$--color-primary-light-6: mix($--color-white, $--color-primary, 60%) !default; /* b3d8ff */
+
+// $--background-color-base: #f5f7fa !default;
+// 若没用到 可删除
+// @import "~element-ui/packages/theme-chalk/src/common/var";
