@@ -96,6 +96,7 @@ exports.findSimilarityAlgorithm = (name) => {
   var mapping = {
     pearson: exports.pearsonCoefficient,
     cosine: exports.cosineCoefficient,
+    adjCosine: exports.adjustedCosineCoefficient
   }
-  return mapping[name] || exports.adjustedCosineCoefficient;
+  return mapping[name];
 }

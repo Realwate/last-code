@@ -5,9 +5,8 @@ const { cosineCoefficient, pearsonCoefficient, adjustedCosineCoefficient } = req
 const Recommender = require('../lib/recommender')
 const log = console.log.bind(console);
 
-const alpha = 0.000001;
-function equal(a,b){
-  return a-b <alpha;
+function equal(a, b) {
+  return a - b < Number.EPSILON;
 }
 
 describe('similarity', function () {
@@ -29,8 +28,28 @@ describe('similarity', function () {
 describe('recommend', function () {
   let rec;
   let user = 'Lisa Rose';
-  let users = null;
-  let items = null;
+  let similarUsers = null;
+  let recomendedItems = null;
+  describe.only('use local dataAccesor',function(){
+    before(async () => {
+      rec = new Recommender({similarityAlgorithm: 'adjCosine',dataAccesor:{}});
+      // rec = new Recommender({similarityAlgorithm: 'pearson',dataAccesor:{}});
+      await (rec.loadDataSet(dataset));
+      await (rec.updateSimilarity(user));
+      return (rec.updateRecommendations(user));
+    })
+
+    it('should return similar users', async () => {
+      similarUsers = await rec.getSimilarUsersFromCache(user,{includeScore:true})
+      log('similar users ', similarUsers)
+    })
+    it('should return recommend items', async () => {
+      recomendedItems = await rec.getRecommendedItemsFromCache(user,{includeScore:true})
+      // assert.deepEqual(items,i)
+      log('recommended items ', recomendedItems)
+    })
+  })
+
   describe('use redis dataAccesor',function(){
     before(async () => {
       rec = new Recommender();
@@ -39,32 +58,14 @@ describe('recommend', function () {
       return (rec.updateRecommendations(user));
     })
     it('should return similar users', async () => {
-      users = await rec.getSimilarUsersFromCache(user)
+      res = await rec.getSimilarUsersFromCache(user,{includeScore:true})
+      assert.deepEqual(res,similarUsers)
       // log('similar users ', users)
     })
-    it('should return recommend items', async () => {
-      items = await rec.getRecommendedItemsFromCache(user)
+    it('should return recommended items', async () => {
+      res = await rec.getRecommendedItemsFromCache(user,{includeScore:true})
+      assert.deepEqual(res,recomendedItems)
       // log('recommended items ', items)
     })
   });
-  describe('use local dataAccesor',function(){
-    before(async () => {
-      rec = new Recommender({dataAccesor:{}});
-      await (rec.loadDataSet(dataset));
-      await (rec.updateSimilarity(user));
-      return (rec.updateRecommendations(user));
-    })
-
-    it('should return similar users', async () => {
-      let u = await rec.getSimilarUsersFromCache(user)
-      assert.deepEqual(u,users)
-      // log('similar users ', users)
-    })
-    it('should return recommend items', async () => {
-      let i = await rec.getRecommendedItemsFromCache(user)
-      assert.deepEqual(items,i)
-      // log('recommended items ', items)
-    })
-  })
-
 })
