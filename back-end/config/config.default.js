@@ -40,6 +40,17 @@ module.exports = appInfo => {
     password: 'root',
     timestamps: true,
   };
+  config.redis = { // redis配置
+    client: {
+      port: 6379,          // Redis port
+      host: 'localhost',   // Redis host
+      password: '',
+      db: 0,
+    },
+  };
+  config.recommender = {
+
+  }
 
   return config;
 };

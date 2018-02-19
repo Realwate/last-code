@@ -1,0 +1,21 @@
+{
+  "name": "recommender",
+  "version": "0.0.1",
+  "description": "collaborative filtering based on user",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "cov": "node --harmony ./node_modules/istanbul/lib/cli.js cover --preserve-comments ./node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "author": "Realwate",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^3.2.0",
+    "power-assert": "^1.4.4"
+  }
+}
