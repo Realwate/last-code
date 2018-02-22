@@ -1,5 +1,5 @@
 'use strict';
-
+const moment = require('moment')
 module.exports = appInfo => {
   const config = exports = {};
 
@@ -38,7 +38,32 @@ module.exports = appInfo => {
     port: '3306',
     username: 'root',
     password: 'root',
-    timestamps: true,
+    operatorsAliases:false,
+    timezone: '+08:00' ,
+    hooks:{
+      beforeDefine:(model,options)=>{ // 格式化时间
+        let Sequelize = options.sequelize.constructor;
+        model.created_at = {
+          type: Sequelize.DATE,
+          get() {
+            return moment(this.getDataValue('created_at')).format('YYYY-MM-DD HH:mm:ss');
+          }
+        }
+        model.updated_at = {
+          type: Sequelize.DATE,
+          get() {
+            return moment(this.getDataValue('updated_at')).format('YYYY-MM-DD HH:mm:ss');
+          }
+        }
+      }
+    },
+    define: {
+      underscored: true, // 字段以下划  线（_）来分割（默认是驼峰命名风格）
+      version: true, // app.sequelize.OptimisticLockError
+      freezeTableName: true,
+      timestamps: true,
+      // paranoid: true, // 逻辑删除
+    }
   };
   config.redis = { // redis配置
     client: {
@@ -49,8 +74,12 @@ module.exports = appInfo => {
     },
   };
   config.recommender = {
+    dataAccesor:{
 
+    }
   }
-
+  config.logger = {
+    consoleLevel: 'DEBUG',
+  }
   return config;
 };
