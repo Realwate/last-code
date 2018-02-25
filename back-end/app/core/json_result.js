@@ -1,6 +1,9 @@
 
 const JSONResult = {};
 JSONResult.error = err => {
+  if(!(err instanceof Error)){
+    err = new Error(err);
+  }
   return {
     success: false,
     error: {

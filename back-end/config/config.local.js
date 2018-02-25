@@ -1,6 +1,6 @@
 'use strict';
 module.exports = appInfo => {
-  return {
+  let config = {};
 
-  };
+  return config;
 };

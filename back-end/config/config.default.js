@@ -41,21 +41,27 @@ module.exports = appInfo => {
     operatorsAliases:false,
     timezone: '+08:00' ,
     hooks:{
-      beforeDefine:(model,options)=>{ // 格式化时间
-        let Sequelize = options.sequelize.constructor;
-        model.created_at = {
-          type: Sequelize.DATE,
-          get() {
-            return moment(this.getDataValue('created_at')).format('YYYY-MM-DD HH:mm:ss');
-          }
-        }
-        model.updated_at = {
-          type: Sequelize.DATE,
-          get() {
-            return moment(this.getDataValue('updated_at')).format('YYYY-MM-DD HH:mm:ss');
-          }
-        }
-      }
+      // beforeDefine:(model,options)=>{ // 格式化时间 beforeDefine只能定义在这里
+      //   let Sequelize = options.sequelize.constructor;
+      //   model.created_at = {
+      //     type: Sequelize.DATE,
+      //     get() {
+      //       if(this.getDataValue('created_at') == null){ // 没查询
+      //         return undefined;
+      //       }
+      //       return moment(this.getDataValue('created_at')).format('YYYY-MM-DD HH:mm:ss');
+      //     }
+      //   }
+      //   model.updated_at = {
+      //     type: Sequelize.DATE,
+      //     get() {
+      //       if(this.getDataValue('updated_at') == null){
+      //         return undefined;
+      //       }
+      //       return moment(this.getDataValue('updated_at')).format('YYYY-MM-DD HH:mm:ss');
+      //     }
+      //   }
+      // }
     },
     define: {
       underscored: true, // 字段以下划  线（_）来分割（默认是驼峰命名风格）

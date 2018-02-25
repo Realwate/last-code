@@ -1,43 +1,63 @@
 'use strict';
 
-const Service = require('egg').Service;
+const Service = require('../core/base_service');
 
-class User extends Service {
-  async list({ offset = 0, limit = 10, order_by = 'created_at', order = 'ASC' }) {
-    return this.ctx.model.User.findAndCountAll({
-      offset,
-      limit,
-      order: [[ order_by, order.toUpperCase() ]],
+class UserService extends Service {
+  constructor(ctx) {
+    super(ctx);
+  }
+  get modelName() {
+    return 'User'
+  }
+  async getUserProfile(id) { // 用户主页
+    const ctx = this.ctx;
+    let user = await this.dao.findOne({
+      where: {
+        id: id,
+      },
+      include: [{ model: ctx.model.Question, as: "question" }]
     });
-  }
+    let following = await user.countFollowing();
+    let follower = await user.countFollower();
 
-  async find(id) {
-    const user = await this.ctx.model.User.findById(id);
-    if (!user) {
-      this.ctx.throw(404, 'user not found');
+    let res = user.get({ plain: true });
+    res.following = following;
+    res.follower = follower;
+    return res;
+  }
+  async getFollowingTag(id) {
+    let user = await this.service.findById(id);
+    let tags = await user.getFollowingTag();
+    return tags;
+  }
+  async getFollowingUser(id) {
+    let user = await this.service.findById(id);
+    let follower = await user.getFollowingUser();
+    return follower;
+  }
+  async getFollowingQuestion(id) {
+    let user = await this.service.findById(id);
+    let questions = await user.getFollowingQuestion();
+    return questions;
+  }
+  async addFollower(userId, followerId) {
+    let user = await this.findById(userId);
+    let follower = await this.findById(followerId);
+    let res = await user.hasFollower(follower);
+    if (res) {
+      this.throwError();
     }
-    return user;
+    user.addFollower(follower);
   }
-
-  async create(user) {
-    return this.ctx.model.User.create(user);
-  }
-
-  async update({ id, updates }) {
-    const user = await this.ctx.model.User.findById(id);
-    if (!user) {
-      this.ctx.throw(404, 'user not found');
+  async deleteFollower(userId, followerId) {
+    let user = await this.findById(userId);
+    let follower = await this.findById(followerId);
+    if (!await user.hasFollower(follower)) {
+      this.throwError();
     }
-    return user.update(updates);
+    user.addFollower(follower);
   }
 
-  async del(id) {
-    const user = await this.ctx.model.User.findById(id);
-    if (!user) {
-      this.ctx.throw(404, 'user not found');
-    }
-    return user.destroy();
-  }
 }
 
-module.exports = User;
+module.exports = UserService;

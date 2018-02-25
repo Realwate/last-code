@@ -7,6 +7,16 @@ class BaseController extends Controller {
   constructor(ctx) {
     super(ctx);
     this.validator = validator;
+    this.service = ctx.service[this.serviceName];
+  }
+  get serviceName(){
+    throw Error('unsuport operation!');
+  }
+  get userId(){
+    return this.ctx.request.userId;
+  }
+  get body(){
+    return this.ctx.request.body;
   }
   success(data) {
     JSONResult.wrap(null, data, this.ctx);

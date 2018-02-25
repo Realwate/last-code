@@ -45,5 +45,10 @@ module.exports = app => {
 
   };
 
+  Question.beforeFind((options)=>{
+    // options.attributes = options.attributes || {};
+    // options.attributes.exclude = ['created_at'];
+  })
+
   return Question;
 };

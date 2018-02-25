@@ -3,7 +3,6 @@
 const util = require('../util');
 
 module.exports = app => {
-
   const { STRING, INTEGER, DATE, BOOLEAN } = app.Sequelize;
   const User = app.model.define('user', {
     id: {
@@ -61,7 +60,7 @@ module.exports = app => {
        {  as: 'follower', through: 'user_follow_user_relation', foreignKey: 'following_id'});
     // 我关注的人
     app.model.User.belongsToMany(app.model.User,
-      {  as: 'following', through: 'user_follow_user_relation', foreignKey: 'follower_id'});
+      {  as: 'followingUser', through: 'user_follow_user_relation', foreignKey: 'follower_id'});
 
     // 我关注的问题
     app.model.User.belongsToMany(app.model.Question,
@@ -71,6 +70,11 @@ module.exports = app => {
       { as: 'followingTag', through: 'user_follow_tag_relation', foreignKey: 'user_id' });
 
     };
+
+    User.beforeFind((options)=>{
+      options.attributes = options.attributes || {};
+      options.attributes.exclude = ['created_at','updated_at','password'];
+    })
 
   return User;
 };

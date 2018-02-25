@@ -4,7 +4,9 @@ const Controller = require('../core/base_controller');
 class UserController extends Controller {
   constructor(ctx) {
     super(ctx);
-    this.commonService = ctx.service.common.model('User');
+  }
+  get serviceName(){
+    return 'user';
   }
   createRule() {
     return {
@@ -18,21 +20,58 @@ class UserController extends Controller {
       ],
     };
   }
-  async create() {
+  async getFollowingUser(){
+    let userId = this.ctx.params.userId;
+    let res = await this.service.getFollowingUser(userId)
+    this.success(res);
+  }
+  async getFollowingQuestions(){
+    let userId = this.ctx.params.userId;
+    let res = await this.service.getFollowingQuestions(userId)
+    this.success(res);
+  }
+  async getFollowingTags(){
+    let userId = this.ctx.params.userId;
+    let res = await this.service.getFollowingTags(userId)
+    this.success(res);
+  }
+  async addFollower(){
+    let userId = this.ctx.params.userId;
+    let followerId  = this.userId;
+    let res = await this.service.addFollower(userId,followerId)
+    this.success();
+  }
+  async deleteFollower(){
+    let userId = this.ctx.params.userId;
+    let followerId  = this.userId;
+    let res = await this.service.deleteFollower(userId,followerId)
+    this.success();
+  }
+  async create() { // 创建
     const ctx = this.ctx;
     await this.validate(this.createRule());
-    const createdUser = await ctx.service.user.create(ctx.request.body);
+    const createdUser = await this.service.create(this.body);
     this.success(createdUser);
   }
+  async show(){ // 查询单个用户
+    const id = this.ctx.params.id;
+    let user = await this.service.getUserProfile(id);
+    this.success(user);
+  }
+  async update(){ // patch 增量更新
+    const id = this.ctx.params.id;
+    let user = await this.service.update(id);
+    this.success(user);
+  }
   async nameCanUse(name) {
-    const user = await this.commonService.findOneByFilter({ name });
+    const user = await this.service.findOneByFilter({ name });
     return user == null;
   }
   async login() {
     const ctx = this.ctx;
-    const user = await this.commonService.findOneByFilter(ctx.request.body);
+    const user = await this.service.findOneByFilter(this.body);
     user == null && this.throwError('账号或密码不正确！');
-    this.success(this.createToken({ name: user.name }));
+    this.success(this.createToken({ userId:user.id,name: user.name }));
   }
   createToken(info) {
     const jwt = require('jsonwebtoken');
