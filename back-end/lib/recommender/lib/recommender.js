@@ -39,7 +39,11 @@ class Recommender {
     this.logger = logger;
     this.dataAccessor.setLogger(logger);
   }
-
+  // 需要处理记录过多 刷新过多的情况 -- 记录时间
+  async refreshRecommendations(userId){ // 刷新
+    await this.updateSimilarity(userId);
+    await this.updateRecommendations(userId);
+  }
   async updateRecommendations(userId) {
     let result = await Promise.all([
       this.dataAccessor.getRecommendedItems(userId,{count:0}),// 已经推荐过的items 没有则返回null
@@ -112,21 +116,21 @@ class Recommender {
   async getSimilarUsersFromCache(userId,options={}) { // 获取相似的user
     this.mergeSimilarityOptions(options);
     let users = await this.dataAccessor.getSimilarUsers(userId,options);// 内部调用的options一定有值
-    if (users == null) {
-      this.logger.log(`${userId} 相似user为0`)
-      return this.updateSimilarity(userId)
-        .then(() => this.dataAccessor.getSimilarUsers(userId,options));
-    }
+    // if (users == null) {
+    //   this.logger.log(`${userId} 相似user为0`)
+    //   return this.updateSimilarity(userId)
+    //     .then(() => this.dataAccessor.getSimilarUsers(userId,options));
+    // }
     return users;
   }
   async getRecommendedItemsFromCache(userId,options={}) {// 获取推荐的item
     this.mergeRecommendOptions(options);
     let items = await this.dataAccessor.getRecommendedItems(userId,options);
-    if (items == null) {
-      this.logger.log(`${userId} 推荐item为0`)
-      return this.updateRecommendations(userId)
-        .then(() => this.dataAccessor.getRecommendedItems(userId,options));
-    }
+    // if (items == null) {
+    //   this.logger.log(`${userId} 推荐item为0`)
+    //   return this.updateRecommendations(userId)
+    //     .then(() => this.dataAccessor.getRecommendedItems(userId,options));
+    // }
     return items;
   }
 }

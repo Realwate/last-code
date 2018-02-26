@@ -4,7 +4,7 @@ const util = require('../util');
 
 module.exports = app => {
 
-  const { STRING, INTEGER, DATE,TEXT} = app.Sequelize;
+  const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
   const Question = app.model.define('question', {
     id: {
       type: STRING(32),
@@ -16,20 +16,33 @@ module.exports = app => {
       allowNull: false,
     },
     content: TEXT,
-    views:  {
+    views: {
       type: INTEGER,
-      defaultValue:0
-    }},
+      defaultValue: 0
+    },
+    vote_count: { // 冗余存储
+      type: INTEGER,
+      defaultValue: 0
+    },
+    follower_count: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+    answer_count: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+  },
     {
       indexes: [
         {
-          fields: [ 'user_id' ],
+          fields: ['user_id'],
         }]
-  });
+    });
 
   Question.associate = function () {
-     // 一个作者
-     app.model.Question.belongsTo(app.model.User, { as: 'creator', foreignKey: 'user_id' });
+    // 一个作者
+    app.model.Question.belongsTo(app.model.User, { as: 'creator', foreignKey: 'user_id' });
 
     // 一个问题多个答案
     app.model.Question.hasMany(app.model.Answer, { as: 'answer', foreignKey: 'question_id' });
@@ -45,7 +58,7 @@ module.exports = app => {
 
   };
 
-  Question.beforeFind((options)=>{
+  Question.beforeFind((options) => {
     // options.attributes = options.attributes || {};
     // options.attributes.exclude = ['created_at'];
   })

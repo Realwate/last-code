@@ -84,6 +84,12 @@ module.exports = appInfo => {
 
     }
   }
+  config.behaviorScore = {
+    question: 3,
+    answer: 3,
+    follow: 2,
+    view: 1,
+  }
   config.logger = {
     consoleLevel: 'DEBUG',
   }

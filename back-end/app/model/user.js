@@ -29,6 +29,7 @@ module.exports = app => {
     },
     avatarUrl:  {
       type: STRING,
+      // defaultValue: "/avatar/default.jpg",
     },
     company:  {
       type: STRING,

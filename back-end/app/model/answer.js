@@ -16,6 +16,14 @@ module.exports = app => {
       defaultValue: false,
     },
     content: TEXT,
+    vote_count: { // 冗余存储
+      type: INTEGER,
+      defaultValue: 0
+    },
+    comment_count: {
+      type: INTEGER,
+      defaultValue: 0
+    },
     // It is possible to create foreign keys:
     // question_id: {
     //   type: STRING(32),

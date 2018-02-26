@@ -5,6 +5,7 @@ const Service = require('egg').Service;
 class BaseService extends Service {
   constructor(ctx) {
     super(ctx);
+    this.Op = this.app.Sequelize.OP;
   }
   get dao() {
     return this.ctx.model[this.modelName];
