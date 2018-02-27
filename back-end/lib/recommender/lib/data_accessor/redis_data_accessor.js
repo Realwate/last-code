@@ -1,4 +1,3 @@
-
 const createClient = require('./redis_client')
 const util = require('../util')
 const {
@@ -19,21 +18,29 @@ class RedisDataAccessor {
   setLogger(logger) {
     this.logger = logger;
   }
-  dataset2Vectors(dataset, keyFn, getFn) { // dataset 转为向量 [key1,json1,key2,json2]
+  async dataset2Vectors(dataset, keyFn, getFn) { // dataset 转为向量 [key1,json1,key2,json2]
     // 先获取旧的
     let keys = Object.keys(dataset);
-    let oldVectors = getFn(keys);
+    let oldVectors = await getFn(keys); // keys数组 返回对应多个vector
     for (let i = 0; i < keys.length; i++) {
-      let oldVector = oldVectors[i];
-      let newVector = dataset[i];
-      for (let vectorKey of Object.keys(newVector)) {
-        if (newVector[vectorKey] == 0) {
+      let key = keys[i];
+      let oldVector = oldVectors[i]; // key
+      let newVector = dataset[key];
+      if (oldVector == null || oldVector.length == 0) { // 没有 直接覆盖
+        oldVectors[i] = newVector;
+        continue;
+      }
+      for (let vectorKey of Object.keys(newVector)) { // patch 覆盖
+        if (newVector[vectorKey] == 0) {    // 分值为0
           oldVector[vectorKey] = undefined;
           continue;
         }
+        if(oldVector[vectorKey] == null){
+          oldVector[vectorKey] = 0;
+        }
         oldVector[vectorKey] += newVector[vectorKey];
       }
-      dataset[i] = oldVector; // 覆盖
+      dataset[key] = oldVector; // 覆盖
     }
     // 返回
     return keys.reduce((arr, key) => {
@@ -44,9 +51,9 @@ class RedisDataAccessor {
 
   async loadDataSet(dataset) { // dataset 为 user-item 格式
     let reversedDataset = util.flipMatrix(dataset);
-    let userKeyValues = this.dataset2Vectors(dataset, userVectorKey, this.getUserVecotr);   // 内部会获取旧的做patch更新
-    let itemKeyValues = this.dataset2Vectors(reversedDataset, itemVectorKey, this.getItemVecotr);
-    return this.redis.msetAsync(userKeyValues.concat(itemKeyValues)); // 总是覆盖
+    let userKeyValues = await this.dataset2Vectors(dataset, userVectorKey, this.getUserVecotr.bind(this)); // 内部会获取旧的做patch更新
+    let itemKeyValues = await this.dataset2Vectors(reversedDataset, itemVectorKey, this.getItemVector.bind(this));
+    return this.redis.msetAsync(userKeyValues.concat(itemKeyValues)); // [key1,val1,key2,val2]总是覆盖
   }
 
   async saveItemScore(userId, result) {

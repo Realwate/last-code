@@ -5,10 +5,15 @@ class Queue {
     this.redis = app.redis;
   }
   async add(str) {
-    this.redis.sadd(key, str);
+    this.redis.sadd(this.key, str);
   }
   async getAll() {
-    return this.redis.smembers(key);
+    return this.redis.smembers(this.key);
+  }
+  async popAll() {
+    return this.getAll(); // 测试用
+   let result = await this.redis.multi().smembers(this.key).del(this.key).exec();
+   return result[0][1]; // [[null,[]],[null,[]]]
   }
   get key() {
     return `MessageQueue:${this.name}`;
@@ -21,7 +26,7 @@ class QueueManager {
     this.app = app;
   }
   get(name) {
-    return this.cache[name] || (this.cache[name] = new MessageQueue(this.app, name));
+    return this.cache[name] || (this.cache[name] = new Queue(this.app, name));
   }
 }
 module.exports = QueueManager;

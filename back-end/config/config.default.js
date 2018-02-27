@@ -79,12 +79,8 @@ module.exports = appInfo => {
       db: 0,
     },
   };
-  config.recommender = {
-    dataAccesor:{
 
-    }
-  }
-  config.behaviorScore = {
+  config.behavior = {
     question: 3,
     answer: 3,
     follow: 2,

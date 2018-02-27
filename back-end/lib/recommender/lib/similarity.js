@@ -21,6 +21,10 @@ function getAverage(vector) {
   return sum(values) / values.length;;
 }
 
+function fixDivisionByZero(totals, commonCount) { // 除数为0 表示两向量的公共维度在同一点 此时根据公共维度数量计算相似度
+  return 0.6 + 0.4 * commonCount / totals;
+}
+
 // 余弦
 exports.cosineCoefficient = function (vector1, vector2) {
   // 找到公共的维度
@@ -64,7 +68,12 @@ exports.pearsonCoefficient = function (vector1, vector2) {
     v2Sum += Math.pow(v2Score, 2);
   }
   denominator = Math.sqrt(v1Sum * v2Sum)
-  return member / denominator;
+  let res = member / denominator;
+  if (Number.isNaN(res)) {
+    let totals = (Object.keys(vector1).length + Object.keys(vector2).length) / 2
+    res = fixDivisionByZero(totals, commonKeys.length);  // 除0产生的NaN
+  }
+  return res;
 }
 
 // 修正余弦
@@ -89,7 +98,11 @@ exports.adjustedCosineCoefficient = function (vector1, vector2) {
   let v2Sum = Object.values(vector2).reduce((sum, value) => sum += Math.pow(value - avg2, 2), 0)
 
   denominator = Math.sqrt(v1Sum * v2Sum)
-  return member / denominator;
+  if (Number.isNaN(res)) {
+    let totals = (Object.keys(vector1).length + Object.keys(vector2).length) / 2
+    res = fixDivisionByZero(totals, commonKeys.length);  // 除0产生的NaN
+  }
+  return res;
 }
 /* istanbul ignore if  */
 exports.findSimilarityAlgorithm = (name) => {

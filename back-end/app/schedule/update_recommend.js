@@ -11,7 +11,7 @@ class UpdateRecommend extends Subscription {
   async subscribe() {
     let recommender = this.ctx.app.recommender;
     let Queue = this.ctx.app.Queue;
-    let userIds = await Queue.get('refreshUsers').getAll();
+    let userIds = await Queue.get('refreshUsers').popAll();
     if(userIds == null){
       return ;
     }

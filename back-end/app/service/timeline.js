@@ -7,7 +7,7 @@ class TimelineService extends Service {
     super(ctx);
     this.recommender = ctx.app.recommender;
   }
-  async constructWhere(ids) {
+  constructWhere(ids) {
     let res = ids.map((id) => `'${id}'`).join(",")
     return ` (${res}) `;
   }
@@ -16,8 +16,14 @@ class TimelineService extends Service {
   }
   async getRecentItem(userId) { // 最新的
     let tags = await this.getService('tag').getTagByUser(userId);
-    let sql = 'select distinct question_id from question_tag_relation where tag_id in' + constructWhere(tags)
-    let questionIds = await this.rawQuery(sql);
+    let questionIds;
+    if(tags == null || tags.length == 0){ // 没有关注tag
+      return this.getQuestions();
+    }
+
+      let sql = 'select distinct question_id from question_tag_relation where tag_id in' + this.constructWhere(tags)
+      questionIds = await this.rawQuery(sql);
+
     return this.getQuestions(questionIds);
   }
   async getRecommendedItem(userId) { // 推荐的
@@ -39,13 +45,20 @@ class TimelineService extends Service {
     return users
   }
   async getQuestions(questionIds) {
+    const ctx = this.ctx;
+    let whereClause = {};
+    if(questionIds){
+      whereClause = { id:{[this.Op.in]: questionIds }}
+    }
     let questions = await this.getDao('Question').findAll({
-      where: { id:{[this.Op.in]: questionIds }},
+      where: whereClause,
       include: [
         { model: ctx.model.Tag, as: "tag" },
         { model: ctx.model.User, as: "creator" },
       ],
       order: [['created_at', 'DESC']],
+      offset: 0,
+      limit: 20
     });
     return questions;
   }

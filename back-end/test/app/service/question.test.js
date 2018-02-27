@@ -10,7 +10,7 @@ const { app, assert } = require('egg-mock/bootstrap');
 
 describe('test/app/service/question.test.js', () => {
 
-    it.only('create question', async () => {
+    it('create question', async () => {
       const ctx = app.mockContext();
       let question = await ctx.service.question.create('2fee2e2016cf11e895f0bda99c7c2758',{main:{
         title:"text",

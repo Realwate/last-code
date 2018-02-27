@@ -49,6 +49,9 @@ class Recommender {
       this.dataAccessor.getRecommendedItems(userId,{count:0}),// 已经推荐过的items 没有则返回null
       this.getSimilarUsersFromCache(userId, {includeScore:true})
     ]);
+    if(result[1] == null){ // 没有behavior 找不到相似用户
+      return;
+    }
     let curUserItemSet = new Set(result[0]); // 用于做差集 得到notRatedItems
     // let recommendtItemSet = new Set(); // 其他用户喜欢的item并集
 
@@ -88,6 +91,9 @@ class Recommender {
   async updateSimilarity(userId) {
     // 获取user所有item
     let curUserVector = await this.getUserVecotr(userId);
+    if(curUserVector == null){ // 没有item
+      return;
+    }
     let itemKeys = Object.keys(curUserVector);
     // 所有曾经对item评分的人
     let ratedSameItemUserSet = new Set();
@@ -97,6 +103,9 @@ class Recommender {
         ratedSameItemUserSet.add(ratedUserId)
     }
     ratedSameItemUserSet.delete(userId); // 去掉自己
+    if(ratedSameItemUserSet.size == 0){ // 没有相似的user
+      return;
+    }
     let ratedSameItemUsers = Array.from(ratedSameItemUserSet);
     let userVectors = await this.getUserVecotr(ratedSameItemUsers);
     let result = [];

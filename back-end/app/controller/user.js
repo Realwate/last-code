@@ -20,9 +20,9 @@ class UserController extends Controller {
       ],
     };
   }
-  async getFollowingUser(){
+  async getFollowingUsers(){
     let userId = this.ctx.params.userId;
-    let res = await this.service.getFollowingUser(userId)
+    let res = await this.service.getFollowingUsers(userId)
     this.success(res);
   }
   async getFollowingQuestions(){

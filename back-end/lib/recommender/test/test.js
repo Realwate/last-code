@@ -12,8 +12,16 @@ function equal(a, b) {
 describe('similarity', function () {
   let v1 = {a:4.5,b:1,c:4,d:3.5,e:4.5}
   let v2 = {a:3.5,b:2.5,c:3.5,d:2,e:3}
-  it('pearson', function () {
-    assert(equal(pearsonCoefficient(v1, v2) ,0.52613364176466 ))
+  it.only('pearson', function () {
+    // assert(equal(pearsonCoefficient(v1, v2) ,0.52613364176466 ))
+    let v1 = {a:3,b:3,c:3,d:3,e:3}
+    let v2 = {a:3,b:3,c:3,d:3,e:3}
+    let v3 = {a:3,b:3,c:3,d:3,e:3.5}
+    console.log('pearson',pearsonCoefficient(v1,v2))
+    console.log('pearson',pearsonCoefficient(v1,v3))
+    console.log('cosin',cosineCoefficient(v1,v2))
+    console.log('adjcosin',adjustedCosineCoefficient(v1,v2))
+
    })
   it('cosine', function () {
     // log(cosineCoefficient(v1, v2))
@@ -30,7 +38,7 @@ describe('recommend', function () {
   let user = 'Lisa Rose';
   let similarUsers = null;
   let recomendedItems = null;
-  describe.only('use local dataAccesor',function(){
+  describe('use local dataAccesor',function(){
     before(async () => {
       rec = new Recommender({similarityAlgorithm: 'adjCosine',dataAccesor:{}});
       // rec = new Recommender({similarityAlgorithm: 'pearson',dataAccesor:{}});

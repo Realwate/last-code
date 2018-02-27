@@ -18,7 +18,7 @@ class SystemService extends Service {
   }
   async saveBehaviorData(userId, itemId, score) { // 保存用户行为数据
     let recommender = this.app.recommender;
-    let res = await recommender.loadDataSet({ userId: { itemId: score } });
+    let res = await recommender.loadDataSet({ [userId]: { [itemId]: score } });
     this.app.Queue.get('refreshUsers').add(userId);
   }
 

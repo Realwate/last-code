@@ -30,7 +30,7 @@ class UserService extends Service {
     let tags = await user.getFollowingTag();
     return tags;
   }
-  async getFollowingUser(id) {
+  async getFollowingUsers(id) {
     let user = await this.service.findById(id);
     let follower = await user.getFollowingUser();
     return follower;

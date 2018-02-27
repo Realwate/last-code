@@ -13,7 +13,7 @@ class TagService extends Service {
   async getTagByUser(userId){
     let user = await this.getService('user').findById(userId);
     let tags = await user.getFollowingTag();
-    return tags.get({plain:true});
+    return tags;
   }
   async getAllTag(userId){
     let tags = await this.dao.findAll({raw:true});

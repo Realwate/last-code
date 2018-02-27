@@ -12,8 +12,14 @@ class QuestionService extends Service {
   // 创建问题
   async create(userId, { ref, main }) { // 参照model, model
     let user = await this.getService('user').findById(userId);
-    this.merge(main, { user_id: userId })
+    this.merge(main, { user_id: userId });
+    let tagIds = ref.tagIds;
+
     let question = await this.dao.create(main);
+    for(let tagId of tagIds){
+      let tag = await this.getService('tag').findById(tagId);
+      question.addTag(tag);
+    }
 
     // 更新 矩阵
     this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.question);
@@ -32,7 +38,7 @@ class QuestionService extends Service {
         {model: ctx.model.User,as:'creator'},
       ]
     });
-
+    return question;
   }
   async queryQuestionByKeyword(keyword) { // 保存用户行为数据
     let questions = await this.dao.findAll({
@@ -89,7 +95,7 @@ class QuestionService extends Service {
     await question.addFollower(follower);
 
     // 更新 矩阵
-    this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.question);
+    this.getService('system').saveBehaviorData(followerId, question.id, this.app.config.behavior.question);
   }
   async deleteFollower(questionId, followerId) {
     let question = await this.findById(questionId);
@@ -101,7 +107,7 @@ class QuestionService extends Service {
     await question.increment('follower_count', {by: -1});
     question.deleteFollower(follower);
     // 更新 矩阵
-    this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.question * -1);
+    this.getService('system').saveBehaviorData(followerId, question.id, this.app.config.behavior.question * -1);
   }
 }
 

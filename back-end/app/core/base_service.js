@@ -20,7 +20,7 @@ class BaseService extends Service {
     });
   }
   getDao(name){
-    return this.ctx.dao[name];
+    return this.ctx.model[name];
   }
   getService(name){
     return this.ctx.service[name];

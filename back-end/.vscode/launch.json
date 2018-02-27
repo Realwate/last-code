@@ -1,0 +1,107 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "test spider",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/lib/spider/index",
+      "stopOnEntry": false,
+      // "cwd": "${workspaceRoot}/lib/recommender",
+      "runtimeExecutable": null,
+      "runtimeArgs": [
+        "--inspect-brk=9220"
+      ],
+      "skipFiles": [
+        "<node_internals>/**/*.js"
+      ],
+      // "args": [
+      //   "test/test.js",
+      //   "--no-timeouts"
+      // ],
+      "port": 9220,
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "test recommender",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/lib/recommender/node_modules/mocha/bin/_mocha",
+      "stopOnEntry": false,
+      "cwd": "${workspaceRoot}/lib/recommender",
+      "runtimeExecutable": null,
+      "runtimeArgs": [
+        "--inspect-brk=9220"
+      ],
+      "args": [
+        "test/test.js",
+        "--no-timeouts"
+      ],
+      "port":9220,
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "name": "Attach Test",
+      "type": "node",
+      "protocol": "inspector",
+      "request": "attach",
+      "timeout": 10000,
+      "restart": true,
+      "port": 9229
+},
+    {
+      "name": "Launch Test",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": [
+        "run",
+        "test-local",
+        "--",
+        "--inspect-brk"
+      ],
+      "console": "integratedTerminal",
+      "protocol": "auto",
+      "restart": true,
+      "port": 9229,
+      "skipFiles": [
+        "<node_internals>/**/*.js",
+        "./node_modules/**/*.js",
+      ],
+    },
+    {
+      "name": "Launch Egg",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      },
+      "runtimeArgs": [
+        "run",
+        "debug",
+        "--", "--inspect-brk"
+      ],
+      // 自动 attach 子进程
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "protocol": "auto",
+      "restart": true,
+      "port": 9229
+    }
+
+  ]
+}

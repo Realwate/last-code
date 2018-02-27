@@ -1,0 +1,17 @@
+{
+  "name": "spider-on-segmentfault",
+  "version": "0.0.1",
+  "description": "collaborative filtering based on user",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "cov": "node --harmony ./node_modules/istanbul/lib/cli.js cover --preserve-comments ./node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "author": "Realwate",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
+  }
+}
