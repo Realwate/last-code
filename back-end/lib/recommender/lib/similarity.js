@@ -21,8 +21,15 @@ function getAverage(vector) {
   return sum(values) / values.length;;
 }
 
-function fixDivisionByZero(totals, commonCount) { // 除数为0 表示两向量的公共维度在同一点 此时根据公共维度数量计算相似度
-  return 0.6 + 0.4 * commonCount / totals;
+function fixDivisionByZero(totals, commonCount) {
+  // 除数为0 表示两向量的公共维度在同一点 此时根据公共维度数量计算相似度
+  // 选用 log以5为底 4x+1 的对数函数
+  // 公共百分比->相似度 0.2-0.36  0.5-0.68  1 - 1
+  let x = commonCount / totals;
+  return log(5, 4 * x + 1);
+}
+function log(a, b) { // 换底
+  return Math.log(b) / Math.log(a);
 }
 
 // 余弦
@@ -98,6 +105,7 @@ exports.adjustedCosineCoefficient = function (vector1, vector2) {
   let v2Sum = Object.values(vector2).reduce((sum, value) => sum += Math.pow(value - avg2, 2), 0)
 
   denominator = Math.sqrt(v1Sum * v2Sum)
+  let res = member / denominator;
   if (Number.isNaN(res)) {
     let totals = (Object.keys(vector1).length + Object.keys(vector2).length) / 2
     res = fixDivisionByZero(totals, commonKeys.length);  // 除0产生的NaN

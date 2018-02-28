@@ -48,26 +48,26 @@ let userService;
 let timelineService;
 const ANSWER_COUNT = 3;
 let questionIds = [];
-describe.only('import data', () => {
+describe('import data', () => {
   before(async () => {
     ctx = app.mockContext();
     questionService = ctx.service.question;
     answerService = ctx.service.answer;
     userService = ctx.service.user;
     timelineService = ctx.service.timeline;
-    await app.model.sync();
     if(fs.existsSync(fileName)){
       let content = fs.readFileSync(fileName);
       content = JSON.parse(content);
       userModelMap = content.userModelMap;
       tagModelMap = content.tagModelMap;
     }else{
+      await app.model.sync();
       await createUser();
       await createTag();
       fs.writeFileSync(fileName,JSON.stringify({userModelMap,tagModelMap}));
     }
   })
-  it.skip('create question and answer success', async () => {
+  it('create question and answer success', async () => {
     let ans = [];
     for (let question of questions) {
       if (!question.answer) {
@@ -98,7 +98,7 @@ describe.only('import data', () => {
     await Promise.all(ans);
 
   });
-  it.skip('return recommend items ', async () => {
+  it.only('return recommend items ', async () => {
     await app.runSchedule('update_recommend');
     let userName = getRandomUser(1)[0];
     let userId = userModelMap[userName];

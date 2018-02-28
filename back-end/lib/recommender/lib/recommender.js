@@ -7,7 +7,7 @@ const defaultConfig = {
     count:10
   },
   similarity:{// 相似用户的数量
-    count:10
+    count:6
   },
   similarityAlgorithm: 'pearson',
   dataAccesor: {
@@ -77,7 +77,9 @@ class Recommender {
           itemScoreResult[item] = [0, 0]; // 分数，用户相似度
         }
         itemScoreResult[item][0] += itemScore * similarity; // item分数 等于评分乘相似度
-        itemScoreResult[item][1] += similarity; // 保存相似度和 用于修正分数
+        itemScoreResult[item][1] += 1; // 直接取平均
+        // itemScoreResult[item][1] += similarity; // 保存相似度和 用于修正分数
+        // 考虑同样的分数 0.1 与 0.9相似度的用户最终评分是一样的 不科学
       }
     }
     let finalResult = []; // [score,name]

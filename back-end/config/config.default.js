@@ -81,10 +81,10 @@ module.exports = appInfo => {
   };
 
   config.behavior = {
-    question: 3,
-    answer: 3,
-    follow: 2,
-    view: 1,
+    // question: 1,
+    answer: 4,
+    follow: 4,
+    view: 0.2,
   }
   config.logger = {
     consoleLevel: 'DEBUG',

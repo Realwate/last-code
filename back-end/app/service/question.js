@@ -22,7 +22,7 @@ class QuestionService extends Service {
     }
 
     // 更新 矩阵
-    this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.question);
+    // this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.question);
     return question;
   }
   async getQuestionDetail(questionId){
