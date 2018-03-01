@@ -24,14 +24,6 @@ module.exports = app => {
       type: INTEGER,
       defaultValue: 0
     },
-    // It is possible to create foreign keys:
-    // question_id: {
-    //   type: STRING(32),
-    //   references: {
-    //     model: app.model.Question,
-    //     key: 'id',
-    //   }
-    // }
   }, {
       indexes: [
         {

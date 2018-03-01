@@ -37,6 +37,9 @@ class BaseService extends Service {
     }
     util.throwError(msg);
   }
+  async parallel(...multiPromise){
+   return Promise.all(multiPromise);
+  }
   async create(obj) {
     return this.dao.create(obj);
   }

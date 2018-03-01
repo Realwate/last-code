@@ -9,8 +9,7 @@ module.exports = () => {
   return async function notFoundHandler(ctx, next) {
     await next();
     if (ctx.status === 404 && !ctx.body) {
-      ctx.logger.info('default handler');
-      if (ctx.acceptJSON) { // JSON数据
+      if (ctx.acceptJSON || ctx.request.type.includes('json')) { // JSON数据
         util.throwError('error request')
       } else { // 返回Index
         ctx.body = await readFile(indexPath);

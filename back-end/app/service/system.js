@@ -6,15 +6,14 @@ class SystemService extends Service {
     super(ctx);
   }
   async getSystemInfo() {
-    return Promise.all([
+    let [userCount, questionCount, answerCount] = await this.parallel(
       this.getService('user').count(),
       this.getService('question').count(),
-      this.getService('answer').count()
-    ]).then(([userCount, questionCount, answerCount]) => {
-      return {
-        userCount, questionCount, answerCount
-      }
-    })
+      this.getService('answer').count());
+
+    return {
+      userCount, questionCount, answerCount
+    }
   }
   async saveBehaviorData(userId, itemId, score) { // 保存用户行为数据
     let recommender = this.app.recommender;

@@ -15,13 +15,6 @@ module.exports = app => {
       type: INTEGER,
       default: 0,
     },
-    // user_id: {
-    //   type: STRING(32),
-    //   references: {
-    //     model: app.model.User,
-    //     key: 'id',
-    //   }
-    // }
   }, {
     indexes: [
       {
