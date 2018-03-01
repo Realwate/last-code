@@ -1,7 +1,9 @@
-
 import axios from 'axios';
 import store from '../store'
+import NProgress from 'nprogress'
+import {baseUrl} from '../config/env'
 
+console.log(baseUrl)
 //全局axios默认设置
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -9,45 +11,50 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 const authAxios = axios.create();
 authAxios.defaults.headers.post['Content-Type'] = 'application/json';
 
-if(localStorage.getItem('jwt')){
+let token = store.state.token;
+if (token) {
   //发送需要认证的请求 带上token 后台会校验后再返会
-  authAxios.defaults.headers.common['Authorization'] = "Bearer "+localStorage.getItem('jwt');
+  authAxios.defaults.headers.common['Authorization'] = "Bearer " + token;
 }
 
 //拦截请求响应，控制顶部进度条
 axios.interceptors.request.use = authAxios.interceptors.request.use;
-authAxios.interceptors.request.use(config=>{
-  store.dispatch('changeProgress',20)
+authAxios.interceptors.request.use(config => {
+  NProgress.start();
   return config
-},err=>{
-  // store.dispatch('showProgress',100)
+}, err => {
+  NProgress.done();
   return Promise.reject(err)
 })
 // axios拦截响应
-authAxios.interceptors.response.use(response=>{
-  store.dispatch('changeProgress',100)
+authAxios.interceptors.response.use(response => {
+  NProgress.done();
   return response
-},err=>{
-  store.dispatch('showProgress',100)
+}, err => {
+  NProgress.done();
   return Promise.reject(err)
 });
 
-//前后端分离，调用后端服务
-axios.defaults.baseURL = authAxios.defaults.baseURL = '/localhost:7001';
+axios.defaults.baseURL = authAxios.defaults.baseURL = baseUrl
 
 //添加修改删除 都需要带上token
-function postApi(apiPath,params,method="post"){
-  return resolveResult(authAxios[method](apiPath,params));
-}
-function getApi(apiPath,params){
-  return resolveResult(axios.get(apiPath,params));
-}
-function resolveResult(res){
-  return res.then(({data})=>data)
+function postApi(apiPath, params, method = "post") {
+  return resolveResult(authAxios[method](apiPath, params));
 }
 
-export default{
-  localLogin(data){
-     return postApi('/api/login',data)
+function getApi(apiPath, params) {
+  return resolveResult(axios.get(apiPath, params));
+}
+
+function resolveResult(res) {
+  return res.then(({data}) => data)
+}
+
+export default {
+  login(data) {
+    return postApi('/api/login', data)
+  },
+  signup(data) {
+    return postApi('/api/signup', data)
   }
 }

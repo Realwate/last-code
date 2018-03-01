@@ -1,5 +1,5 @@
 
-export default{
+export default {
   USER_LOGOUT(state){
     localStorage.removeItem("jwt");
     state.token = null;

@@ -1,0 +1,78 @@
+@import url('https://fonts.proxy.ustclug.org/css?family=Roboto');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+html{
+  height: 100%;
+}
+body{
+  height: 100%;
+  background-color: #F4F5F5;
+  font:15px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
+  color:#333;
+  background-image: url('../image/bg.png');
+  background-size: cover;
+}
+ul,li{
+  list-style: none;
+}
+.container{
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.nav-icon{
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+  &:hover{
+    color: #0084FF;
+  }
+}
+.list{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  &.vertical{
+    flex-direction: column;
+    .list-item:not(:last-of-type){
+      flex: 1;
+      margin-bottom: 15px;
+    }
+  }
+}
+.list-item{
+  padding:3px 10px;
+  margin: 0 5px;
+}
+
+.nav-list{
+  @extend .list;
+}
+.nav-item{
+  @extend .list-item;
+  cursor: pointer;
+  &.active{
+    color: #0084FF;
+  }
+  &:hover{
+    color: #339dff;
+  }
+}
+.clearfix{
+  &:before{
+    content:"";
+    display: block;
+    clear: both;
+  }
+  &:after{
+    content:"";
+    display: block;
+    clear: both;
+  }
+}

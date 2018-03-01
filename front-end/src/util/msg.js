@@ -25,7 +25,5 @@ function confirm(msg){
 }
 
 export default  {
-  alertSuccess,
-  alertError,
-  confirm
+  alertSuccess,alertError,confirm
 }
