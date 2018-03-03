@@ -5,14 +5,17 @@ module.exports = appInfo => {
 
   config.keys = appInfo.name + '_1517665391204_9001';
 
-  config.middleware = [ 'gzip','authorizationHandler','notfoundHandler','errorHandler', ];
+  config.middleware = ['gzip', 'errorHandler', 'authorizationHandler', 'notfoundHandler',];
   config.errorHandler = {
     match: '/api',
   };
 
   config.authorizationHandler = {
-    ignore(ctx) { // 不需要验证的path
-      const ignorePaths = [ '/api/login', '/api/signup' ];
+    ignore(ctx) {
+      if (!ctx.path.startsWith('/api')) { // 非API请求忽略
+        return true;
+      }
+      const ignorePaths = ['/api/login', '/api/signup'];
       return ignorePaths.some(path => ctx.path.startsWith(path));
     },
   };
@@ -38,9 +41,9 @@ module.exports = appInfo => {
     port: '3306',
     username: 'root',
     password: 'root',
-    operatorsAliases:false,
-    timezone: '+08:00' ,
-    hooks:{
+    operatorsAliases: false,
+    timezone: '+08:00',
+    hooks: {
       // beforeDefine:(model,options)=>{ // 格式化时间 beforeDefine只能定义在这里
       //   let Sequelize = options.sequelize.constructor;
       //   model.created_at = {
