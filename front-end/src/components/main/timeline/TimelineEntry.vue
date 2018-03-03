@@ -13,9 +13,7 @@
         <div class="info">
           <div class="title-box">
             <h1 class="title" @click="toQuestionDetail(question.id)" v-text="question.title"></h1>
-            <div class="tag-list" >
-              <div class="tag" v-for="tag in question.tags" :key="tag.id" @click="toTagDetail(tag.id)" v-text="tag"></div>
-            </div>
+            <tag-inline-list :tags="question.tags"></tag-inline-list>
           </div>
           <ul class="list bottom-list">
             <li class="list-item">
@@ -33,6 +31,7 @@
   </ul>
 </template>
 <script>
+  import TagInlineList from '../question/TagInlineList'
   export default {
     data() {
       return {
@@ -40,18 +39,22 @@
     },
     methods: {
       toQuestionDetail(questionId){
+        this.$router.push({path:`/question/${questionId}`})
       },
       toTagDetail(tagId){
-
+        this.$router.push({path:`/tag/${tagId}`})
       },
     },
     props:['questions'],
+    components:{
+      TagInlineList
+    }
 
   }
 </script>
 <style scoped>
   .entry-list-item{
-    padding: 10px;
+    padding: 5px 15px;
     border: 1px dashed #ccc;
     margin-bottom: 10px;
   }
@@ -69,33 +72,17 @@
     font-size: 15px;
     color: #666;
   }
-  .tag-list{
-    display: inline-block;
-  }
+
   .title-box{
     margin: 5px 10px;
 
   }
   .title{
     display: inline-block;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
     font-weight: normal;
-  }
-  .tag-list{
-    margin-left: 10px;
-  }
-  .tag{
-    display: inline-block;
-    cursor: pointer;
-    padding: 2px 3px;
-    margin: 0 5px;
-    color: #409eff;
-    border-radius: 2px;
-    background-color: rgba(64,158,255,.1);
-  }
-  .tag:hover{
-    background-color: rgba(64,158,255,.3);
+    margin-right:10px;
   }
   .bottom-list{
     justify-content: flex-start;

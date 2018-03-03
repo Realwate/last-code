@@ -1,16 +1,10 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar hidden-sm-and-down">
     <section class="sidebar-block">
       <ul class="nav-list vertical">
-        <li class="nav-item">
-          我的提问
-        </li>
-        <li class="nav-item">
-          我的回答
-        </li>
-        <li class="nav-item">
-          我的关注
-        </li>
+        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'question' }}" class="nav-item" tag="li"> 我的提问 </router-link>
+        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'answer' }}" class="nav-item" tag="li"> 我的回答 </router-link>
+        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'follow' }}" class="nav-item" tag="li"> 我的关注 </router-link>
       </ul>
     </section>
     <section class="sidebar-block">
@@ -30,7 +24,8 @@
   </aside>
 </template>
 <script>
-
+  import { mapState } from 'vuex'
+  import UserProfile from '@/components/main/profile/UserProfile'
   export default {
     data() {
       return {
@@ -40,6 +35,9 @@
         answerCount: 200,
       }
     },
+    computed: mapState([
+      'userId'
+    ]),
     methods: {
       getRecommendedItems() {
         this.currentTab = "recommendedItem";

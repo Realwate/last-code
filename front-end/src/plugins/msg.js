@@ -1,7 +1,6 @@
-import Vue from "vue"
-
+import {Message,MessageBox} from 'element-ui'
 function showMessage(content,type){
-  Vue.prototype.$message({
+  Message({
     message:content,
     type:type,
     showClose: true,
@@ -17,7 +16,7 @@ function alertError(msg){
 }
 
 function confirm(msg){
-  return Vue.prototype.$confirm(msg, '提示', {
+  return MessageBox.confirm(msg, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

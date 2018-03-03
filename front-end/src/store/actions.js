@@ -9,8 +9,5 @@ export default {
   },
   UserLogin({ commit }, token) {
     commit('USER_SIGNIN', token)
-  },
-  changeProgress({ commit }, value) {
-    commit("CHANGE_PROGRESS", value);
   }
 }

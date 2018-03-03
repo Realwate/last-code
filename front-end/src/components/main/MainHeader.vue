@@ -1,6 +1,6 @@
 <template>
   <header class="main-header">
-    <div class="container">
+    <div class="flex-container">
       <router-link class='logo' :to="{name:'timeline'}">
         <i class="fa fa-cube"></i> CC
       </router-link>
@@ -13,7 +13,7 @@
             </el-input>
           </li>
           <li class="nav-item ask">
-            <el-button type="primary" size="small" >提问</el-button>
+            <el-button type="primary" size="small" @click="ask">提问</el-button>
           </li>
           <li class="nav-item notification">
             <el-badge :value="notificationCount" :max="10">
@@ -37,6 +37,7 @@
   </header>
 </template>
 <script>
+  import {mapState} from 'vuex'
 
   export default {
     data() {
@@ -45,23 +46,26 @@
         notificationCount: 99,
       }
     },
+    computed: mapState([
+      'userId'
+    ]),
     methods: {
       toUserProfile() {
-        this.$router.push({name:'userProfile'})
+        this.$router.push({name: 'userProfile', params: {userId: this.userId}})
       },
       toTag() {
-        this.$router.push({name:'tagManagement'})
+        this.$router.push({name: 'tagManagement'})
       },
       toSetting() {
-        this.$router.push({name:'setting'})
+        this.$router.push({name: 'userSetting'})
+      },
+      ask(){
+        this.$router.push({name:"questionAsk"})
       },
       logout() {
         this.$store.dispatch('UserLogout');
       },
       search() {
-
-      },
-      showUserDropDown() {
 
       },
       showNotification() {
@@ -78,28 +82,36 @@
     height: 65px;
     background: #fff;
     box-shadow: 1px 1px 3px rgba(200, 200, 200, 0.4);
+    margin-bottom: 1px;
   }
+
   .main-nav {
     flex: 1;
   }
+
   .logo {
     height: 40px;
     color: #333;
     font-size: 32px;
     text-decoration: none;
   }
+
   .menu .nav-icon:hover {
     color: #333;
   }
+
   .search {
     flex: 0 0 30%;
   }
-  .notification{
+
+  .notification {
     font-size: 24px;
   }
-  .ask{
+
+  .ask {
     margin-right: 20px;
   }
+
   .el-icon-search {
     width: 24px;
     height: 24px;

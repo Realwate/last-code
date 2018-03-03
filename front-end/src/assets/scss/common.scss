@@ -10,20 +10,34 @@ html{
 body{
   height: 100%;
   background-color: #F4F5F5;
-  font:15px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
+  font:14px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
   color:#333;
-  background-image: url('../image/bg.png');
+  //background-image: url('../image/bg.png');
   background-size: cover;
 }
 ul,li{
   list-style: none;
 }
+.fl{
+  float: left;
+}
+.fr{
+  float: right;
+}
 .container{
   max-width: 960px;
   margin: 0 auto;
+  height: 100%;
+}
+.flex-container{
+  @extend .container;
   display: flex;
   align-items: center;
-  height: 100%;
+}
+.panel{
+  padding: 10px;
+  background-color: #fff;
+  box-sizing: border-box;
 }
 .nav-icon{
   width: 28px;
@@ -64,15 +78,13 @@ ul,li{
     color: #339dff;
   }
 }
+
 .clearfix{
-  &:before{
-    content:"";
-    display: block;
-    clear: both;
+  &:after,&:before{
+    display: table;
+    content: "";
   }
   &:after{
-    content:"";
-    display: block;
     clear: both;
   }
 }

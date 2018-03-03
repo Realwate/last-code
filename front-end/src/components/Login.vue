@@ -28,8 +28,6 @@
   </el-row>
 </template>
 <script>
-  import api from "../api"
-
   export default {
     data() {
       return {
@@ -65,7 +63,7 @@
           this.isLoading = true;
 
           // 如果正确 返回token 保存到 localstorage
-          api.login(this.user)
+          this.$api.login(this.user)
             .then(({success, data, error}) => {//返回对象中的data为真实返回结果
               if (!success) {
                 //登录失败

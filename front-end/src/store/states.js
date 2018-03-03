@@ -1,5 +1,10 @@
 
-function getToken() { //关闭网页后再次访问 取出token
+let state = {
+  token:null,
+  userId:null
+};
+
+function initlizeState() { //关闭网页后再次访问 取出token
   let token = localStorage.getItem('jwt');
   if (token) {
     // 取出jwtpayload部分(jwt由.分割的三部分组成)
@@ -8,15 +13,13 @@ function getToken() { //关闭网页后再次访问 取出token
 
     // 前端判断token是否过期，如果过期了访问时候会路由到login页面
     if (payload.exp > Date.now() / 1000) {
-      return token;
+      state.token = token;
+      state.userId = payload.data.userId;
     }
   }
 
-  return null;
 }
 
-export default {
-  //jwt的payload部分 vue中可使用
-  token: getToken(),
+initlizeState();
 
-}
+export default state

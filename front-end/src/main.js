@@ -1,11 +1,9 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 Vue.config.productionTip = false
 
 import Vue from "vue";
-import ElementUI from "element-ui";
 import App from './App';
 
+import 'element-ui/lib/theme-chalk/display.css';
 import 'font-awesome/css/font-awesome.min.css'
 import "nprogress/nprogress.css";
 
@@ -13,20 +11,19 @@ import "nprogress/nprogress.css";
 import './assets/scss/index.scss';
 import "./assets/scss/common.scss";
 
+import element from 'element-ui'
+Vue.use(element);
 
-Vue.use(ElementUI);
+import plugins from '@/plugins'
+Vue.use(plugins);
 
 import router from './router'
 import store from './store'
 
-import util from '@/util'
-Vue.use(util)
-
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>'
-})
+});

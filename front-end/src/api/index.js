@@ -3,7 +3,6 @@ import store from '../store'
 import NProgress from 'nprogress'
 import {baseUrl} from '../config/env'
 
-console.log(baseUrl)
 //全局axios默认设置
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
