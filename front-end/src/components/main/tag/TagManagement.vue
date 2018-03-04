@@ -1,11 +1,5 @@
 <template>
-  <div class="main">
-    <nav-header>
-      <template slot="title">
-        标签管理
-      </template>
-    </nav-header>
-    <div class="container panel">
+    <div class="container main-panel">
       <el-tabs v-model="activeName" @tab-click="toggleTag">
         <el-tab-pane label="已关注标签" name="followed">
           <tag-list :tags="followedTags"></tag-list>
@@ -15,7 +9,6 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-  </div>
 </template>
 <script>
   import TagList from './TagList'
@@ -64,6 +57,7 @@
       },
     },
     created() {
+      this.$store.dispatch('ChangeNavHeader',{type:'title',title:'标签管理'})
     },
     components: {
       TagList,NavHeader

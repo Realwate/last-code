@@ -1,5 +1,6 @@
 @import url('https://fonts.proxy.ustclug.org/css?family=Roboto');
 
+@import "./var.scss";
 *{
   margin: 0;
   padding: 0;
@@ -9,20 +10,88 @@ html{
 }
 body{
   height: 100%;
-  background-color: #F4F5F5;
+  background-color: #f9f9f9;
   font:14px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
   color:#333;
-  //background-image: url('../image/bg.png');
   background-size: cover;
 }
 ul,li{
   list-style: none;
+}
+a{
+  text-decoration: none;
+}
+h1,h2,h3,h4{
+  font-weight: normal;
+}
+.md-font{
+  font-size: 18px;
+}
+.lg-font{
+  font-size: 20px;
+}
+.flex1{
+  flex: 1;
+}
+.pd20{
+  padding: 20px !important;
+}
+.pd30{
+  padding: 30px !important;
+}
+.mb10{
+  margin-bottom: 10px;
+}
+.mt10{
+  margin-top: 10px;
 }
 .fl{
   float: left;
 }
 .fr{
   float: right;
+}
+.dib{
+  display: inline-block;
+}
+.bb1{
+  border-bottom:1px solid #ccc;
+}
+.clearfix{
+  &:after,&:before{
+    display: table;
+    content: "";
+  }
+  &:after{
+    clear: both;
+  }
+}
+.avatar-32{
+  width: 32px;
+  height: 32px;
+}
+.shadow {
+  box-shadow: 1px 1px 4px  rgba(153, 153, 153, 0.3);
+}
+.little-shadow{
+  box-shadow: 1px 1px 2px 0 rgba(0,0,0,.1)
+}
+.panel{
+  @extend .little-shadow;
+  padding: 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.view{
+  min-height: calc(100vh - #{ $main-header-height + 35px});
+}
+.main-panel{
+  @extend .view;
+  @extend .panel;
+}
+.main{
+  padding: 10px 0 20px;
+  margin-top:  $main-header-height;
 }
 .container{
   max-width: 960px;
@@ -32,12 +101,8 @@ ul,li{
 .flex-container{
   @extend .container;
   display: flex;
+  justify-content: center;
   align-items: center;
-}
-.panel{
-  padding: 10px;
-  background-color: #fff;
-  box-sizing: border-box;
 }
 .nav-icon{
   width: 28px;
@@ -79,12 +144,4 @@ ul,li{
   }
 }
 
-.clearfix{
-  &:after,&:before{
-    display: table;
-    content: "";
-  }
-  &:after{
-    clear: both;
-  }
-}
+

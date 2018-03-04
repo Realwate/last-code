@@ -1,56 +1,54 @@
 <template>
-  <div>
-    <nav-header></nav-header>
-    <div class="container panel">
-      <div class="question-header section-block">
-        <div class="clearfix title-wrapper">
-          <span class="question-icon">问</span>
-          <h1 class="title">移动端适配问题?</h1>
-        </div>
+  <div class="container main-panel pd20">
+    <div class="question-header bb1">
+      <div class="clearfix mb10">
+        <span class="question-icon">问</span>
+        <h1 class="lg-font" v-text="question.title"></h1>
+      </div>
 
-        <div class="info">
-          <tag-inline-list :tags="question.tags"></tag-inline-list>
-          <router-link class="author" :to="{name:'userProfile',params:{userId:question.author.id}}"
-                       v-text="question.author.name"></router-link>
-          <div class="date">
-            <span v-text="$util.formatDate(question.createdAt)"></span>提问
+      <div class="info">
+        <tag-inline-list :tags="question.tags"></tag-inline-list>
+        <router-link class="author" :to="{name:'userProfile',params:{userId:question.author.id}}"
+                     v-text="question.author.name"></router-link>
+        <div class="date">
+          <span v-text="$util.formatDate(question.createdAt)"></span>提问
+        </div>
+      </div>
+    </div>
+    <div class="question-detail section-block">
+      <vote :voteCount="question.voteCount"></vote>
+      <div class="content-wrapper" v-html="question.content"></div>
+    </div>
+    <div class="answer-area">
+      <h4 class="area-title">
+        <span v-text="question.answers.length"></span> 个回答
+      </h4>
+
+      <ul v-if="question.answers.length > 0">
+        <li class=" section-block" v-for="answer in question.answers">
+          <vote :voteCount="answer.voteCount"></vote>
+          <div class="content-wrapper">
+            <div v-html="answer.content"></div>
           </div>
-        </div>
-      </div>
-      <div class="section-block content-block">
-        <vote :voteCount="question.voteCount"></vote>
-        <div class="content-box" v-html="question.content"></div>
-      </div>
-      <div class="answer-box">
-        <h4 class="box-title">
-          <span v-text="question.answers.length"></span> 个回答
-        </h4>
-
-        <ul v-if="question.answers.length > 0">
-          <li class="content-block section-block" v-for="answer in question.answers">
-            <vote :voteCount="answer.voteCount"></vote>
-            <div class="content-box">
-              <div class="answer-content" v-html="answer.content"></div>
-              <div class="answer-bottom clearfix">
-                <div class="date fl">
-                  <router-link class="answer-author" :to="{name:'userProfile',
+          <div class="answer-bottom">
+            <div class="dib">
+              <!--<img class="avatar-32" :src="answer.author.avatarUrl" alt="">-->
+              <router-link class="author" :to="{name:'userProfile',
                 params:{userId:answer.author.id}}" v-text="answer.author.name">
-                  </router-link>
-                  <span v-text="$util.formatDate(answer.createdAt)"></span> 回答 </div>
-                <div class="user fr">
-
-                </div>
-              </div>
+              </router-link>
             </div>
-          </li>
-        </ul>
+            <div class="date dib">
+              <span v-text="$util.formatDate(answer.createdAt)"></span>回答
+            </div>
+          </div>
 
-      </div>
-      <div class="write-box">
-        <h4 class="box-title">撰写答案</h4>
-        <answer-editor v-model="answer"></answer-editor>
-        <el-button class="answer-btn" size="medium" type="primary">提交回答</el-button>
-      </div>
+        </li>
+      </ul>
+    </div>
+    <div class="mt10">
+      <h4 class="area-title">撰写答案</h4>
+      <answer-editor v-model="answer"></answer-editor>
+      <el-button class="mt10" size="medium" type="primary">提交回答</el-button>
     </div>
   </div>
 </template>
@@ -77,17 +75,17 @@
     },
     methods: {},
     created() {
+      this.$store.dispatch('ChangeNavHeader')
       let {questionId} = this.$route.params;
-
     },
     components: {
-      TagInlineList, Vote, AnswerEditor,NavHeader
+      TagInlineList, Vote, AnswerEditor
     },
   }
 </script>
 <style scoped>
-  .panel {
-    padding: 10px 20px 20px;
+  .question-header {
+    padding-bottom: 10px;
   }
 
   .question-icon {
@@ -102,15 +100,6 @@
     box-sizing: border-box;
     line-height: 32px;
     text-align: center;
-  }
-
-  .title-wrapper {
-    margin-bottom: 10px;
-  }
-
-  .title {
-    font-weight: normal;
-    font-size: 20px;
   }
 
   .author {
@@ -130,35 +119,32 @@
   }
 
   .section-block {
-    padding: 12px 0;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .content-block {
+    padding: 20px 0 10px;
     min-height: 100px;
+    border-bottom: 1px solid #ccc;
+    position: relative;
   }
 
-  .content-box {
-    padding: 15px;
-    margin-left: 50px;
+  .question-detail {
+    border-bottom: none;
   }
 
-  .answer-btn {
-    margin-top: 5px;
+  .content-wrapper {
+    margin-left: 70px;
+    font-size: 14px;
   }
 
-  .box-title {
+  .area-title {
     font-size: 18px;
     font-weight: normal;
     margin-bottom: 10px;
     padding: 10px 0;
-    border-bottom:2px solid #ccc;
+    border-bottom: 1px solid #ccc;
   }
-  .answer-content{
-    margin-bottom: 10px;
-  }
-  .write-box {
-    margin-top: 20px;
+  .answer-bottom{
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
   }
 
 </style>

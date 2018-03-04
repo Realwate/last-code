@@ -5,7 +5,7 @@ import Login from '@/components/Login'
 import SignUp from '@/components/SignUp'
 import NotFound from '@/components/NotFound'
 
-import Root from '@/components/main/Root'
+import MainRoot from '@/components/main/MainRoot'
 import Timeline from '@/components/main/timeline/Timeline'
 
 import QuestionDetail from '@/components/main/question/QuestionDetail'
@@ -27,7 +27,7 @@ Vue.use(Router)
 let routes = [
   {
     path: '/',
-    component: Root,
+    component: MainRoot,
     children: [
       {path: '', redirect: 'timeline'},
       {path: 'timeline', component: Timeline, name: 'timeline'},

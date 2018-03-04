@@ -50,6 +50,7 @@
     },
     created() {
       if (this.$route.query.redirect) {
+        this.$router.replace({name:"login"});
         this.alertError('请先登录!')
       }
     },

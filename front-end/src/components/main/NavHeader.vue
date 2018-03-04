@@ -1,20 +1,18 @@
 <template>
-  <header>
-    <div class="panel nav-header">
-      <div class="container">
-        <div v-if="$slots.title">
-          <h3 class="nav-header-title">
-            <slot name="title"></slot>
-          </h3>
-        </div>
-        <div v-else>
-          <tag-inline-list :tags="tags">
-            <span class="follow" slot="before">我关注的:</span>
-          </tag-inline-list>
-        </div>
+  <div class="nav-header panel">
+    <div class="container">
+      <div v-if="navHeader.type === 'title'">
+        <h3 class="nav-header-title">
+          {{navHeader.title}}
+        </h3>
+      </div>
+      <div v-else-if="navHeader.tags">
+        <tag-inline-list :tags="navHeader.tags">
+          <span class="follow" slot="before">我关注的:</span>
+        </tag-inline-list>
       </div>
     </div>
-  </header>
+  </div>
 </template>
 <script>
   import {mapState} from 'vuex'
@@ -22,23 +20,12 @@
 
   export default {
     data() {
-      return {
-        tags: []
-      }
+      return {}
     },
     computed: {
       ...mapState([
-        'userId'
+        'userId', 'navHeader'
       ]),
-      showFollowTag() {
-        return !this.$slots.title;
-      }
-    },
-    methods: {},
-    created() {
-      if (this.showFollowTag) {
-        this.tags = [{id: 'ff', name: 'javasciprt'}, {id: 'faf', name: 'Spring'},]
-      }
     },
     components: {
       TagInlineList
@@ -48,18 +35,20 @@
 </script>
 <style scoped>
   .nav-header {
-    margin-bottom: 8px;
+    padding: 7px 5px 5px;
+    height: 40px;
+    box-sizing: border-box;
+    background: rgba(255,255,255,.9);
   }
-  .panel{
-    padding: 7px;
-  }
+
   .nav-header-title {
     font-size: 15px;
     padding-left: 20px;
-    font-weight:normal;
+    font-weight: normal;
     text-align: center;
     color: #0084ff;
   }
+
   .follow {
     font-size: 15px;
     color: #888;

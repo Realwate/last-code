@@ -55,5 +55,11 @@ export default {
   },
   signup(data) {
     return postApi('/api/signup', data)
+  },
+  getTagByUser(userId){
+    return new Promise((resolve)=>{
+      let data = [{id:'a',name:'java'},{id:'ad',name:'android'},]
+      setTimeout(()=>resolve(data),1000);
+    })
   }
 }

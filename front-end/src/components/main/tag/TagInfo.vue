@@ -32,29 +32,6 @@
   }
 </script>
 <style scoped>
-  .tag-box {
-    text-align: center;
-    margin-bottom: 15px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    padding: 20px 10px;
-
-  }
-
-  .desc a {
-    text-decoration: none;
-  }
-
-  .tag-icon {
-    height: 34px;
-    width: 100%;
-  }
-
-  .tag-name {
-    color: #333;
-    font-weight: normal;
-  }
-
   .info-box {
     display: flex;
     justify-content: center;

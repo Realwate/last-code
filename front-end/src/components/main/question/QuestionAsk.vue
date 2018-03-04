@@ -1,44 +1,40 @@
 <template>
-  <div class="main">
-    <nav-header>
-      <template slot="title">提问</template>
-    </nav-header>
-    <div class="container panel">
-      <el-row type="flex" justify="center">
-        <el-col :span="24">
-          <el-form ref="question" :model="question" label-width="80px">
-            <el-form-item  label="标题">
-              <el-input class="title-input" autofocus v-model="question.title"></el-input>
-            </el-form-item>
-            <el-form-item label="标签">
-              <el-tag v-for="tag in question.tags" :disable-transitions="true"
-                      :key="tag.id" type="small" @close="removeTag(tag)"
-                      closable>
-                {{tag.name}}
-              </el-tag>
-              <el-autocomplete
-                :value-key="'name'"
-                :fetch-suggestions="queryTags"
-                placeholder="请选择标签"
-                @select="handleSelect"
-              ></el-autocomplete>
-            </el-form-item>
-            <el-form-item label="内容">
-              <answer-editor v-model="question.content"></answer-editor>
-            </el-form-item>
+  <div class="container pd30 main-panel">
+    <el-row type="flex" justify="center">
+      <el-col :span="24">
+        <el-form ref="question" :model="question" label-width="80px">
+          <el-form-item label="标题">
+            <el-input class="title-input" autofocus v-model="question.title"></el-input>
+          </el-form-item>
+          <el-form-item label="标签">
+            <el-tag v-for="tag in question.tags" :disable-transitions="true"
+                    :key="tag.id" type="small" @close="removeTag(tag)"
+                    closable>
+              {{tag.name}}
+            </el-tag>
+            <el-autocomplete
+              :value-key="'name'"
+              :fetch-suggestions="queryTags"
+              placeholder="请选择标签"
+              @select="handleSelect"
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="内容">
+            <answer-editor v-model="question.content"></answer-editor>
+          </el-form-item>
 
-            <el-form-item style="text-align: center">
-              <el-button type="primary" size="medium" @click="save">提 交</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </div>
+          <el-form-item style="text-align: center">
+            <el-button type="primary" size="medium" @click="save">提 交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
   import AnswerEditor from './AnswerEditor'
   import NavHeader from '../NavHeader'
+
   export default {
     data() {
       return {
@@ -79,24 +75,23 @@
       },
     },
     created() {
+      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '提问'})
       setTimeout(() => {
-        this.allTags = [{id: 'wfa', name: 'android'},{id: 'ffa', name: 'javascript'}, {id: 'ff', name: 'vue'}]
+        this.allTags = [{id: 'wfa', name: 'android'}, {id: 'ffa', name: 'javascript'}, {id: 'ff', name: 'vue'}]
       }, 300);
 
     },
     components: {
-      AnswerEditor,NavHeader
+      AnswerEditor
     },
   }
 </script>
 <style scoped>
-  .title-input{
+  .title-input {
     font-size: 18px;
   }
-  .panel{
-    padding:30px 20px;
-  }
-  .el-tag+.el-tag{
+
+  .el-tag+.el-tag {
     margin-left: 10px;
   }
 </style>

@@ -6,11 +6,11 @@
         <span v-text="$util.formatDate(question.createdAt)"></span>提问
       </div>
       <div class="clearfix">
-        <div class="vote">
+        <div class="vote fl">
           <div v-text="question.voteCount"></div>
           <div>得票</div>
         </div>
-        <div class="info">
+        <div class="info fl">
           <div class="title-box">
             <h1 class="title" @click="toQuestionDetail(question.id)" v-text="question.title"></h1>
             <tag-inline-list :tags="question.tags"></tag-inline-list>
@@ -61,9 +61,6 @@
   .meta{
     padding-left:8px;
     color: #999;
-  }
-  .info,.vote{
-    float: left;
   }
   .vote{
     margin-right: 10px;

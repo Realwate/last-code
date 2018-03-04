@@ -47,22 +47,16 @@
     padding:20px 10px;
 
   }
-  .desc a{
-    text-decoration: none;
-  }
   .tag-icon{
     height: 34px;
     width: 100%;
   }
   .tag-name{
-    color: #333;
+    color: #555;
     font-weight:normal;
   }
-  .info-box{
-    display: flex;
-    justify-content: center;
-    margin:5px 0;
-    color: #888;
+  .desc:hover .tag-name{
+    color: #111;
   }
 </style>
 
