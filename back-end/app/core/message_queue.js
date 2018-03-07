@@ -11,7 +11,7 @@ class Queue {
     return this.redis.smembers(this.key);
   }
   async popAll() {
-    return this.getAll(); // 测试用
+   return this.getAll(); // 测试用
    let result = await this.redis.multi().smembers(this.key).del(this.key).exec();
    return result[0][1]; // [[null,[]],[null,[]]]
   }

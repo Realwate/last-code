@@ -4,7 +4,7 @@ const util = require('../util');
 
 module.exports = app => {
 
-  const { STRING, INTEGER, DATE, BOOLEAN } = app.Sequelize;
+  const { STRING, INTEGER, DATE,BOOLEAN } = app.Sequelize;
   const AnswerVote = app.model.define('answer_vote', {
     id: {
       type: STRING(32),
@@ -15,6 +15,8 @@ module.exports = app => {
       type: INTEGER,
       default: 0,
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   }, {
       indexes: [
         {

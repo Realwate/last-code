@@ -31,7 +31,7 @@ let tagModelMap = {};
 async function createUser() {
   let User = ctx.model.User;
   for (let name of userNames) {
-    let user = await User.create({ name, password: "" });
+    let user = await User.create({ name, password: "a" });
     userModelMap[user.name] = user.id;
   }
 }
@@ -61,13 +61,13 @@ describe('import data', () => {
       userModelMap = content.userModelMap;
       tagModelMap = content.tagModelMap;
     }else{
-      await app.model.sync();
+      // await app.model.sync({force:true});
       await createUser();
       await createTag();
       fs.writeFileSync(fileName,JSON.stringify({userModelMap,tagModelMap}));
     }
   })
-  it('create question and answer success', async () => {
+  it.only('create question and answer success', async () => {
     let ans = [];
     for (let question of questions) {
       if (!question.answer) {

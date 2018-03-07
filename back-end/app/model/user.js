@@ -37,6 +37,8 @@ module.exports = app => {
     site:  {
       type: STRING,
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   }, {
     indexes: [
       {
@@ -47,9 +49,9 @@ module.exports = app => {
 
   User.associate = function () {
     // 我提出的问题
-    app.model.User.hasMany(app.model.Question, { as: 'question', foreignKey: 'user_id' });
+    app.model.User.hasMany(app.model.Question, { as: 'questions', foreignKey: 'user_id' });
     // 我的回答
-    app.model.User.hasMany(app.model.Answer, { as: 'answer', foreignKey: 'user_id' });
+    app.model.User.hasMany(app.model.Answer, { as: 'answers', foreignKey: 'user_id' });
 
     // 我的投票
     app.model.User.hasMany(app.model.AnswerVote, { as: 'answerVote', foreignKey: 'user_id' });
@@ -58,17 +60,17 @@ module.exports = app => {
 
     // 关注我的人
     app.model.User.belongsToMany(app.model.User,
-       {  as: 'follower', through: 'user_follow_user_relation', foreignKey: 'following_id'});
+       {  as: 'followers', through: 'user_follow_user_relation', foreignKey: 'following_id'});
     // 我关注的人
     app.model.User.belongsToMany(app.model.User,
-      {  as: 'followingUser', through: 'user_follow_user_relation', foreignKey: 'follower_id'});
+      {  as: 'followingUsers', through: 'user_follow_user_relation', foreignKey: 'follower_id'});
 
     // 我关注的问题
     app.model.User.belongsToMany(app.model.Question,
-      { as: 'followingQuestion', through: 'user_follow_question_relation', foreignKey: 'user_id' });
+      { as: 'followingQuestions', through: 'user_follow_question_relation', foreignKey: 'user_id' });
     // 我关注的标签
     app.model.User.belongsToMany(app.model.Tag,
-      { as: 'followingTag', through: 'user_follow_tag_relation', foreignKey: 'user_id' });
+      { as: 'followingTags', through: 'user_follow_tag_relation', foreignKey: 'user_id' });
 
     };
 

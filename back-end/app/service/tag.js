@@ -12,7 +12,7 @@ class TagService extends Service {
 
   async getTagByUser(userId){
     let user = await this.getService('user').findById(userId);
-    let tags = await user.getFollowingTag();
+    let tags = await user.getFollowingTags();
     return tags;
   }
   async getAllTag(userId){

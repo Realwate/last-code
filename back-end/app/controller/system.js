@@ -12,6 +12,10 @@ class SystemController extends Controller {
     let result = await this.service.getSystemInfo();
     this.success(result);
   }
+  async getSimilarUsers() {
+    let result = await this.service.getSimilarUsers(this.userId);
+    this.success(result);
+  }
 }
 
 module.exports = SystemController;

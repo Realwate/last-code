@@ -10,7 +10,7 @@ module.exports = () => {
     await next();
     if (ctx.status === 404 && !ctx.body) {
       if (ctx.acceptJSON || ctx.request.type.includes('json')) { // JSON数据
-        util.throwError('error request')
+        util.throwError('illegal request')
       } else { // 返回Index
         ctx.body = await readFile(indexPath);
         ctx.status = 200;

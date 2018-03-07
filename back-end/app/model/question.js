@@ -20,18 +20,20 @@ module.exports = app => {
       type: INTEGER,
       defaultValue: 0
     },
-    vote_count: { // 冗余存储
+    voteCount: { // 冗余存储
       type: INTEGER,
       defaultValue: 0
     },
-    follower_count: {
+    followerCount: {
       type: INTEGER,
       defaultValue: 0
     },
-    answer_count: {
+    answerCount: {
       type: INTEGER,
       defaultValue: 0
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   },
     {
       indexes: [
@@ -45,16 +47,16 @@ module.exports = app => {
     app.model.Question.belongsTo(app.model.User, { as: 'creator', foreignKey: 'user_id' });
 
     // 一个问题多个答案
-    app.model.Question.hasMany(app.model.Answer, { as: 'answer', foreignKey: 'question_id' });
+    app.model.Question.hasMany(app.model.Answer, { as: 'answers', foreignKey: 'question_id' });
     // 多个投票
     app.model.Question.hasMany(app.model.QuestionVote, { as: 'questionVote', foreignKey: 'question_id' });
 
     // 关注问题的user
     app.model.Question.belongsToMany(app.model.User,
-      { as: 'followedUser', through: 'user_follow_question_relation', foreignKey: 'question_id' });
+      { as: 'followedUsers', through: 'user_follow_question_relation', foreignKey: 'question_id' });
     // 问题的标签
     app.model.Question.belongsToMany(app.model.Tag,
-      { as: 'tag', through: 'question_tag_relation', foreignKey: 'question_id' });
+      { as: 'tags', through: 'question_tag_relation', foreignKey: 'question_id' });
 
   };
 

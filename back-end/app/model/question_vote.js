@@ -15,6 +15,8 @@ module.exports = app => {
       type: INTEGER,
       default: 0,
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   }, {
     indexes: [
       {

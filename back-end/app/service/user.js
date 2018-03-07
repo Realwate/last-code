@@ -25,18 +25,18 @@ class UserService extends Service {
     res.follower = follower;
     return res;
   }
-  async getFollowingTag(id) {
-    let user = await this.service.findById(id);
-    let tags = await user.getFollowingTag();
+  async getFollowingTags(id) {
+    let user = await this.dao.findById(id);
+    let tags = await user.getFollowingTags();
     return tags;
   }
   async getFollowingUsers(id) {
-    let user = await this.service.findById(id);
+    let user = await this.dao.findById(id);
     let follower = await user.getFollowingUser();
     return follower;
   }
   async getFollowingQuestion(id) {
-    let user = await this.service.findById(id);
+    let user = await this.dao.findById(id);
     let questions = await user.getFollowingQuestion();
     return questions;
   }

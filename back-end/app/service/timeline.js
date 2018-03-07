@@ -27,22 +27,11 @@ class TimelineService extends Service {
     return this.getQuestions(questionIds);
   }
   async getRecommendedItem(userId) { // 推荐的
-    let questionIds = await this.recommender.getRecommendedItemsFromCache(userId);
+    let questionIds = await this.recommender.getRecommendedItemsFromCache(userId,{count:20});
     if (questionIds == null) {
       return this.getRecentItem(userId);
     }
     return this.getQuestions(questionIds);
-  }
-  async getSimilarUser(userId) {
-    let userIds = await this.recommender.getSimilarUsersFromCache(userId,{count:3});
-    if(userIds == null){
-      return null;
-    }
-    let users = await this.getDao('User').findAll({
-      where: { id:{[this.Op.in]: userIds }},
-      raw: true
-    });
-    return users
   }
   async getQuestions(questionIds) {
     const ctx = this.ctx;
@@ -53,7 +42,7 @@ class TimelineService extends Service {
     let questions = await this.getDao('Question').findAll({
       where: whereClause,
       include: [
-        { model: ctx.model.Tag, as: "tag" },
+        { model: ctx.model.Tag, as: "tags" },
         { model: ctx.model.User, as: "creator" },
       ],
       order: [['created_at', 'DESC']],

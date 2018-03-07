@@ -16,14 +16,16 @@ module.exports = app => {
       defaultValue: false,
     },
     content: TEXT,
-    vote_count: { // 冗余存储
+    voteCount: { // 冗余存储
       type: INTEGER,
       defaultValue: 0
     },
-    comment_count: {
+    commentCount: {
       type: INTEGER,
       defaultValue: 0
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   }, {
       indexes: [
         {
@@ -40,7 +42,7 @@ module.exports = app => {
     // 多个投票
     app.model.Answer.hasMany(app.model.AnswerVote, { as: 'answerVote', foreignKey: 'answer_id' });
     // 多条评论
-    app.model.Answer.hasMany(app.model.Comment, { as: 'comment', foreignKey: 'answer_id' });
+    app.model.Answer.hasMany(app.model.Comment, { as: 'comments', foreignKey: 'answer_id' });
 
   };
 

@@ -15,6 +15,8 @@ module.exports = app => {
       type: TEXT,
       allowNull: false,
     },
+    createdAt: DATE,
+    updatedAt: DATE,
   }, {
     indexes: [
       {

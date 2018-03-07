@@ -32,13 +32,14 @@ class QuestionService extends Service {
         id:questionId
       },
       include:[
-        {model: ctx.model.Answer,as:'answer',include:[
+        {model: ctx.model.Tag,as:'tags'},
+        {model: ctx.model.Answer,as:'answers',include:[
           {model:ctx.model.User,as:'author'}
         ]},
         {model: ctx.model.User,as:'creator'},
       ]
     });
-    return question;
+    return question[0];
   }
   async queryQuestionByKeyword(keyword) { // 保存用户行为数据
     let questions = await this.dao.findAll({

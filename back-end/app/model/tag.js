@@ -17,17 +17,18 @@ module.exports = app => {
     },
     description: TEXT,
     iconUrl: STRING,
-  }
-);
+    createdAt: DATE,
+    updatedAt: DATE,
+  });
 
   Tag.associate = function () {
     // 多个问题
     app.model.Tag.belongsToMany(app.model.Question,
-      { as: 'question', through: 'question_tag_relation', foreignKey: 'tag_id' });
+      { as: 'questions', through: 'question_tag_relation', foreignKey: 'tag_id' });
 
     // 关注的用户
     app.model.Tag.belongsToMany(app.model.User,
-      { as: 'followedUser', through: 'user_follow_tag_relation', foreignKey: 'tag_id' });
+      { as: 'followedUsers', through: 'user_follow_tag_relation', foreignKey: 'tag_id' });
   };
 
   return Tag;

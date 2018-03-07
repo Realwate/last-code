@@ -119,13 +119,13 @@ class Recommender {
     return this.saveSimilarityResult(userId, result); // 保存结果
   }
   mergeSimilarityOptions(options){
-    Object.assign(options,this.similarityOptions);
+    return Object.assign({},this.similarityOptions,options);
   }
   mergeRecommendOptions(options){
-    Object.assign(options,this.recommendOptions);
+    return Object.assign({},this.recommendOptions,options);
   }
   async getSimilarUsersFromCache(userId,options={}) { // 获取相似的user
-    this.mergeSimilarityOptions(options);
+    options = this.mergeSimilarityOptions(options);
     let users = await this.dataAccessor.getSimilarUsers(userId,options);// 内部调用的options一定有值
     // if (users == null) {
     //   this.logger.log(`${userId} 相似user为0`)
@@ -135,7 +135,7 @@ class Recommender {
     return users;
   }
   async getRecommendedItemsFromCache(userId,options={}) {// 获取推荐的item
-    this.mergeRecommendOptions(options);
+    options = this.mergeRecommendOptions(options);
     let items = await this.dataAccessor.getRecommendedItems(userId,options);
     // if (items == null) {
     //   this.logger.log(`${userId} 推荐item为0`)

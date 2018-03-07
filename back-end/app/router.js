@@ -40,6 +40,7 @@ module.exports = app => {
 
   // 系统信息
   router.get('/api/system', app.controller.system.getSystemInfo);
+  router.get('/api/system/similarusers', app.controller.system.getSimilarUsers);
 
   // timeline
   router.get('/api/timeline/recommend', app.controller.timeline.getRecommendedItem);

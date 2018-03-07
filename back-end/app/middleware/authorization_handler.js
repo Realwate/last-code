@@ -19,9 +19,9 @@ module.exports = (options, app) => {
         throw new Error('');
       }
       req.userId = decoded.data.userId;
-      next();
     } catch (err) {
       app.util.throwError('授权已经过期，请重新登陆');
     }
+    await next();
   };
 };
