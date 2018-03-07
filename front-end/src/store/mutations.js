@@ -10,6 +10,6 @@ export default {
     state.token = token;
   },
   NAV_HEADER_CHANGE(state,data){
-    state.navHeader = data;
+    state.navHeader = Object.assign({},state.navHeader,data)
   }
 }

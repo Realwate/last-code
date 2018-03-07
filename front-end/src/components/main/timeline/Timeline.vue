@@ -1,20 +1,19 @@
 <template>
   <main class="main-container flex-container">
-    <div class="panel flex1 view">
+    <div class="main-panel flex1" v-loading="loading">
       <header class="mb10">
         <nav>
           <ul class="nav-list">
-            <li class="nav-item" :class="{active:currentTab === 'rencentItem'}"
+            <li class="nav-item" :class="{active:currentTab === 'recent'}"
                 @click="getRecentItems">最新
             </li>
             <li class="nav-item">热门</li>
-            <li class="nav-item" :class="{active:currentTab === 'recommendedItem'}" @click="getRecommendedItems">推荐</li>
+            <li class="nav-item" :class="{active:currentTab === 'recommend'}" @click="getRecommendedItems">推荐</li>
           </ul>
         </nav>
       </header>
-      <div>
-        <timeline-entry :questions="questions"/>
-      </div>
+
+      <timeline-entry :questions="questions"/>
     </div>
     <timeline-sidebar/>
   </main>
@@ -26,45 +25,29 @@
   export default {
     data() {
       return {
-        currentTab: "rencentItem",
-        questions: [
-          {
-            id: 'fff', author: {name: 'aa'}, createdAt: 1519509611477,
-            title: "如何学习javascript?",
-            tags: [{id: 'g', name: '前端'}, 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-          {
-            author: {name: 'aa'}, createdAt: 1519909611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-          {
-            author: {name: 'aa'}, createdAt: 1519909611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-          {
-            author: {name: 'aa'}, createdAt: 1519909611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-        ]
+        currentTab: "recentItem",
+        loading: false,
+        questions: []
       }
     },
     methods: {
       getRecommendedItems() {
-        this.currentTab = "recommendedItem";
+        this.currentTab = "recommend";
+        this.changeTab();
       },
       getRecentItems() {
-        this.currentTab = "rencentItem";
+        this.currentTab = "recent";
+        this.changeTab();
+      },
+      async changeTab() {
+        this.loading = true;
+        this.questions = await this.$api.timeline(this.currentTab);
+        this.loading = false;
       }
     },
     created() {
-      this.$store.dispatch('ChangeNavHeader')
+      this.$store.dispatch('ChangeNavHeader');
+      this.getRecentItems();
     },
     components: {
       TimelineEntry, TimelineSidebar

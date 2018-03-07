@@ -10,7 +10,7 @@ html{
 }
 body{
   height: 100%;
-  background-color: #f9f9f9;
+  background-image:url('../image/bg.png');
   font:14px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
   color:#333;
   background-size: cover;
@@ -66,9 +66,26 @@ h1,h2,h3,h4{
     clear: both;
   }
 }
-.avatar-32{
-  width: 32px;
-  height: 32px;
+.avatar{
+  background-color: #fff;
+  border-radius:4px;
+  vertical-align: bottom;
+}
+.avatar-24{
+  @extend .avatar;
+  width: 24px;
+  height: 24px;
+}
+
+.avatar-28{
+  @extend .avatar;
+  width: 28px;
+  height: 28px;
+}
+.avatar-140{
+  @extend .avatar;
+  width: 140px;
+  height: 140px;
 }
 .shadow {
   box-shadow: 1px 1px 4px  rgba(153, 153, 153, 0.3);
@@ -125,6 +142,12 @@ h1,h2,h3,h4{
     }
   }
 }
+.align-start{
+  align-items: flex-start;
+}
+.justify-start{
+  justify-content: flex-start;
+}
 .list-item{
   padding:3px 10px;
   margin: 0 5px;
@@ -142,6 +165,30 @@ h1,h2,h3,h4{
   &:hover{
     color: #339dff;
   }
+}
+.link{
+  color: $--color-primary;
+  &:hover{
+    color: $--color-primary-dark-2;
+  }
+}
+.router-link-active{
+  @extend .link;
+}
+.author {
+  font-size: 16px;
+  margin: 0 3px;
+  text-decoration: none;
+  color: #333;
+  &:hover {
+    color: #0084ff;
+    text-decoration: underline;
+  }
+}
+.small-author {
+  @extend .author;
+  margin: 0 3px;
+  font-size: 15px;
 }
 
 

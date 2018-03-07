@@ -1,5 +1,5 @@
 <template>
-  <transition name="fade">
+  <transition name="el-zoom-in-top">
     <header v-show="showPageHeader" class="page-header shadow">
       <div ref="mainHeader" class="main-header">
         <div class="flex-container">

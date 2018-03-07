@@ -23,23 +23,12 @@
         },
         questions: [
           {
-            id: 'fff', author: {name: 'aa'}, createdAt: 1519509611477,
+            id: 'fff', creator: {name: 'aa'}, createdAt: 1519509611477,
             title: "如何学习javascript?",
             tags: ['前端', 'javascipt'],
             answerCount: 12, voteCount: 3, followerCount: 4
           },
-          {
-            id: 'ffd', author: {name: 'aa'}, createdAt: 1519509611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-          {
-            id: 'ffhf', author: {name: 'aa'}, createdAt: 1519509611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
+
         ]
       }
     },

@@ -2,7 +2,7 @@
   <ul class="entry-list" >
     <li class="entry-list-item" v-for="question in questions" :key="question.id">
       <div class="meta">
-        <span v-text="question.author.name"></span> &nbsp;
+        <span v-text="question.creator.name"></span> &nbsp;
         <span v-text="$util.formatDate(question.createdAt)"></span>提问
       </div>
       <div class="clearfix">
@@ -10,7 +10,7 @@
           <div v-text="question.voteCount"></div>
           <div>得票</div>
         </div>
-        <div class="info fl">
+        <div class="info">
           <div class="title-box">
             <h1 class="title" @click="toQuestionDetail(question.id)" v-text="question.title"></h1>
             <tag-inline-list :tags="question.tags"></tag-inline-list>
@@ -69,17 +69,22 @@
     font-size: 15px;
     color: #666;
   }
-
+  .info{
+    overflow: auto;
+  }
   .title-box{
     margin: 5px 10px;
 
   }
   .title{
-    display: inline-block;
+    display: inline;
     font-size: 18px;
     cursor: pointer;
     font-weight: normal;
     margin-right:10px;
+  }
+  .title:hover{
+    color: #0084ff;
   }
   .bottom-list{
     justify-content: flex-start;

@@ -1,32 +1,38 @@
-
-import router from '@/router'/*用于路由跳转*/
+import router from '@/router'
+/*用于路由跳转*/
 
 import api from '@/api'
 
-let version = 1;
+let getVersion = (function () {
+  let versionMap = {};
+  return (name) => {
+    return {
+      version: versionMap[name] || (versionMap[name] = 1),
+      valid: (v) => v === versionMap[name] && versionMap[name]++
+    }
+  }
+})()
+
 export default {
-  UserLogout({ commit }) {
+  UserLogout({commit}) {
     commit("USER_LOGOUT");
-    router.push({ name: 'login' });
+    router.push({name: 'login'});
   },
-  UserLogin({ commit }, token) {
+  UserLogin({commit}, token) {
     commit('USER_SIGNIN', token)
   },
-  async ChangeNavHeader({ commit,state }, data) {
-    let localV = version;
+  async ChangeNavHeader({commit, state}, data) {
+    let {version, valid} = getVersion('navHeader');
     // 一样不更新
-    if(data == null && state.tags){
+    if (data == null && state.navHeader.tags) {
+      commit('NAV_HEADER_CHANGE', {type: null});
       return;
     }
-    if(data == null){
+    if (data == null) {
       let tags = await api.getTagByUser(state.userId);
-      if(localV === version){
-        version++;
-        commit('NAV_HEADER_CHANGE', {tags});
-      }
+      valid(version) && commit('NAV_HEADER_CHANGE', {type: null, tags});
       return;
     }
-    version++;
-    commit('NAV_HEADER_CHANGE', data);
+    valid(version) && commit('NAV_HEADER_CHANGE', data);
   }
 }

@@ -1,15 +1,20 @@
 <template>
   <div class="nav-header panel">
     <div class="container">
-      <div v-if="navHeader.type === 'title'">
+      <div v-show="navHeader.type === 'title'">
         <h3 class="nav-header-title">
           {{navHeader.title}}
         </h3>
       </div>
-      <div v-else-if="navHeader.tags">
-        <tag-inline-list :tags="navHeader.tags">
-          <span class="follow" slot="before">我关注的:</span>
-        </tag-inline-list>
+      <div v-show="navHeader.type == null">
+        <div v-if="navHeader.tags && navHeader.tags.length">
+          <tag-inline-list :tags="navHeader.tags">
+            <span class="follow" slot="before">我关注的:</span>
+          </tag-inline-list>
+        </div>
+        <div v-else>
+          暂未关注任何标签，点击前往 <router-link class="link" :to="{name:'tagManagement'}">标签管理</router-link>
+        </div>
       </div>
     </div>
   </div>

@@ -8,8 +8,8 @@
 
       <div class="info">
         <tag-inline-list :tags="question.tags"></tag-inline-list>
-        <router-link class="author" :to="{name:'userProfile',params:{userId:question.author.id}}"
-                     v-text="question.author.name"></router-link>
+        <router-link class="author" :to="{name:'userProfile',params:{userId:question.creator.id}}"
+                     v-text="question.creator.name"></router-link>
         <div class="date">
           <span v-text="$util.formatDate(question.createdAt)"></span>提问
         </div>
@@ -32,7 +32,7 @@
           </div>
           <div class="answer-bottom">
             <div class="dib">
-              <!--<img class="avatar-32" :src="answer.author.avatarUrl" alt="">-->
+              <img class="avatar-28" src="../../../assets/image/user-default.png" alt="">
               <router-link class="author" :to="{name:'userProfile',
                 params:{userId:answer.author.id}}" v-text="answer.author.name">
               </router-link>
@@ -45,10 +45,15 @@
         </li>
       </ul>
     </div>
-    <div class="mt10">
-      <h4 class="area-title">撰写答案</h4>
-      <answer-editor v-model="answer"></answer-editor>
-      <el-button class="mt10" size="medium" type="primary">提交回答</el-button>
+    <div class="mt10" >
+      <div v-if="hasAnswered">
+        <h4 class="area-title">这个问题你已经提交过回答了~</h4>
+      </div>
+      <div v-else>
+        <h4 class="area-title">撰写答案</h4>
+        <answer-editor v-model="answer"></answer-editor>
+        <el-button class="mt10" size="medium" type="primary">提交回答</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,26 +62,31 @@
   import Vote from './Vote'
   import AnswerEditor from './AnswerEditor'
   import NavHeader from '../NavHeader'
+  import { mapState } from 'vuex'
 
   export default {
     data() {
       return {
         question: {
-          voteCount: 4, content: 'faaaaaaaaaaaaa不知道',
-          id: 'fff', author: {id: 'qwe', name: 'aa'}, createdAt: 1519509611477,
-          title: "如何学习javascript?", answers: [{
-            author: {name: 'Realwate', id: 'da'}, id: 'ad',
-            voteCount: 43, content: 'qhqiwop'
-          }],
-          tags: [{id: 'g', name: '前端'}, {id: 'gf', name: 'javascipt'},]
+          creator:{},
+          answers:[]
         },
         answer: ''
       }
     },
+    computed:{
+      ...mapState([
+                 'userId'
+               ]),
+      hasAnswered(){
+        return this.question.answers.map((answer)=>answer.author.id).includes(this.userId)
+      }
+    },
     methods: {},
-    created() {
+    async created() {
       this.$store.dispatch('ChangeNavHeader')
       let {questionId} = this.$route.params;
+      this.question = await this.$api.getQuestion(questionId);
     },
     components: {
       TagInlineList, Vote, AnswerEditor
@@ -100,17 +110,6 @@
     box-sizing: border-box;
     line-height: 32px;
     text-align: center;
-  }
-
-  .author {
-    font-size: 18px;
-    margin: 0 3px 0 15px;
-    text-decoration: none;
-    color: #333;
-  }
-
-  .author:hover {
-    text-decoration: underline;
   }
 
   .date {
@@ -141,7 +140,8 @@
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
   }
-  .answer-bottom{
+
+  .answer-bottom {
     position: absolute;
     right: 10px;
     bottom: 2px;

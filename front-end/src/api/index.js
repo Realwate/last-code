@@ -2,10 +2,10 @@ import axios from 'axios';
 import store from '../store'
 import NProgress from 'nprogress'
 import {baseUrl} from '../config/env'
+import Msg from '../plugins/msg'
 
 //全局axios默认设置
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const authAxios = axios.create();
 authAxios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -17,7 +17,6 @@ if (token) {
 }
 
 //拦截请求响应，控制顶部进度条
-axios.interceptors.request.use = authAxios.interceptors.request.use;
 authAxios.interceptors.request.use(config => {
   NProgress.start();
   return config
@@ -34,7 +33,7 @@ authAxios.interceptors.response.use(response => {
   return Promise.reject(err)
 });
 
-axios.defaults.baseURL = authAxios.defaults.baseURL = baseUrl
+authAxios.defaults.baseURL = baseUrl
 
 //添加修改删除 都需要带上token
 function postApi(apiPath, params, method = "post") {
@@ -42,24 +41,43 @@ function postApi(apiPath, params, method = "post") {
 }
 
 function getApi(apiPath, params) {
-  return resolveResult(axios.get(apiPath, params));
+  return resolveResult(authAxios.get(apiPath, params));
 }
 
 function resolveResult(res) {
   return res.then(({data}) => data)
+    .then(({success, error, data}) => {
+      if (!success) { // 统一错误处理
+        Msg.alertError(error.message)
+        throw new Error(error.message);
+      }
+      return data
+    })
 }
 
 export default {
+  parallel(...multiPromise) {
+    return Promise.all(multiPromise);
+  },
   login(data) {
     return postApi('/api/login', data)
   },
   signup(data) {
     return postApi('/api/signup', data)
   },
-  getTagByUser(userId){
-    return new Promise((resolve)=>{
-      let data = [{id:'a',name:'java'},{id:'ad',name:'android'},]
-      setTimeout(()=>resolve(data),1000);
-    })
+  timeline(type) { // recommend recent hot
+    return getApi(`/api/timeline/${type}`);
+  },
+  getSystemInfo() {
+    return getApi(`/api/system`);
+  },
+  getQuestion(questionId) {
+    return getApi(`/api/question/${questionId}`);
+  },
+  getSimilarUsers() {
+    return getApi(`/api/system/similarusers`);
+  },
+  getTagByUser(userId) {
+    return getApi(`/api/user/${userId}/following-tags`);
   }
 }

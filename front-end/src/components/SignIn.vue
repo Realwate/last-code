@@ -32,10 +32,10 @@
     data() {
       return {
         isLoading: false,
-        checked: !!this.getCookie("checked"),
+        checked: !!this.$util.getCookie("checked"),
         user: {
-          name: this.getCookie("name") || "",
-          password: this.getCookie("password") || ""
+          name: this.$util.getCookie("name") || "",
+          password: this.$util.getCookie("password") || ""
         },
         rules: {
           /*对应prop*/
@@ -50,7 +50,7 @@
     },
     created() {
       if (this.$route.query.redirect) {
-        this.$router.replace({name:"login"});
+        this.$router.replace({name: "login"});
         this.alertError('请先登录!')
       }
     },
@@ -65,41 +65,31 @@
 
           // 如果正确 返回token 保存到 localstorage
           this.$api.login(this.user)
-            .then(({success, data, error}) => {//返回对象中的data为真实返回结果
-              if (!success) {
-                //登录失败
-                this.alertError(error.message)
-                this.isLoading = false;
-                return
-              }
+            .then((data) => {//返回对象中的data为真实返回结果
+              this.isLoading = false;
               if (this.checked) {
                 let user = this.user;
                 //将date设置为10天以后的时间
-                var expireDays = 10;
+                let expireDays = 10;
                 //将userId和name两个cookie设置为10天后过期
-                var date = new Date((Date.now() + expireDays * 24 * 3600 * 1000));
-                document.cookie = `name=${encodeURIComponent(user.name)};expires=${date.toUTCString()};`;
-                document.cookie = `password=${encodeURIComponent(user.password)};expires=${date.toUTCString()};`;
-                document.cookie = `checked=true;expires=${date.toUTCString()};`;
+                let date = new Date((Date.now() + expireDays * 24 * 3600 * 1000));
+                this.$util.setCookie('name', user.name, date);
+                this.$util.setCookie('password', user.password, date);
+                this.$util.setCookie('checked', true, date);
               }
               // 存储token到vuex
               this.$store.dispatch('UserLogin', data);
               this.$router.push({path: '/'});
             })
-            .catch((e) => {   //登录失败
-              this.alertError(e.message)
+            .catch(() => {   //登录失败
               this.isLoading = false;
             })  //api login end
 
         });
-
       },
       toSignUp() {
         this.$router.push({name: 'signup'});
       },
-      getCookie(sKey) {
-        return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
-      }
     }
   }
 </script>
@@ -113,7 +103,6 @@
   }
 
   .login-form {
-    /*width: 400px;*/
     padding: 20px 30px;
     border: 1px solid $--color-primary-light-1;
     border-radius: 5px;

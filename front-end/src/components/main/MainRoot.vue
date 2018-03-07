@@ -1,5 +1,5 @@
 <template>
-<div class="clearfix">
+<div class="clearfix bg">
   <page-header></page-header>
   <div class="main">
     <router-view>
@@ -19,4 +19,9 @@ import PageHeader from './PageHeader'
     }
   }
 </script>
+<style>
+  .bg{
+    background-color: #f9f9f9;
+  }
+</style>
 

@@ -17,6 +17,10 @@ Vue.use(element);
 import plugins from '@/plugins'
 Vue.use(plugins);
 
+Vue.config.errorHandler = function (err, vm, info) {
+  console.error(err,vm,info);
+}
+
 import router from './router'
 import store from './store'
 

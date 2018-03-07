@@ -7,15 +7,24 @@
         <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'follow' }}" class="nav-item" tag="li"> 我的关注 </router-link>
       </ul>
     </section>
-    <section class="sidebar-block shadow">
-      <h4 class="section-title mb10">可能感兴趣的人</h4>
+    <section class="sidebar-block shadow" v-show="similarUsers && similarUsers.length > 0">
+      <h3 class="section-title mb10">可能感兴趣的人</h3>
+      <ul class="list vertical align-start">
+        <li class="list-item" v-for="user in similarUsers">
+          <router-link :to="{name: 'userProfile',params:{userId: user.id}}">
+            <img class="avatar-24" src="../../../assets/image/user-default.png" alt="">
+            <span class="small-author">{{user.name}}</span>
+          </router-link>
+
+        </li>
+      </ul>
     </section>
     <section class="sidebar-block shadow">
-      <h4 class="section-title">社区运行情况</h4>
-      <ul class="list vertical">
-        <li class="list-item">用户数： <span v-text="userCount"></span></li>
-        <li class="list-item">问题数： <span v-text="questionCount"></span></li>
-        <li class="list-item">回复数： <span v-text="answerCount"></span></li>
+      <h3 class="section-title">社区运行情况</h3>
+      <ul class="list vertical align-start">
+        <li class="list-item">用户数： <span v-text="systemInfo.userCount"></span></li>
+        <li class="list-item">问题数： <span v-text="systemInfo.questionCount"></span></li>
+        <li class="list-item">回复数： <span v-text="systemInfo.answerCount"></span></li>
       </ul>
     </section>
     <footer>
@@ -29,24 +38,20 @@
   export default {
     data() {
       return {
-        currentTab: "rencentItem",
-        userCount: 10,
-        questionCount: 150,
-        answerCount: 200,
+        systemInfo:{
+        },
+        similarUsers:[]
       }
     },
     computed: mapState([
       'userId'
     ]),
     methods: {
-      getRecommendedItems() {
-        this.currentTab = "recommendedItem";
-      },
-      getRecentItems() {
-        this.currentTab = "rencentItem";
-      }
     },
-    created() {
+    async created() {
+      let [sys,similarUsers] = await this.$api.parallel(this.$api.getSystemInfo(),this.$api.getSimilarUsers());
+      this.systemInfo = sys;
+      this.similarUsers = similarUsers;
     },
   }
 </script>
@@ -61,10 +66,7 @@
     padding: 15px;
   }
   .section-title{
-
-  }
-  .list {
-    justify-content: flex-start;
+    margin-bottom: 10px;
   }
 </style>
 

@@ -1,8 +1,8 @@
 <template>
   <ul class="tag-inline-list" >
-    <li class="item"><slot name="before"></slot></li>
+    <li class="item" v-if="$slots.before"><slot name="before"></slot></li>
     <li class="item tag-inline" v-for="tag in tags" :key="tag.id" @click="toTagDetail(tag.id)" v-text="tag.name"></li>
-    <li class="item"><slot name="after"></slot></li>
+    <li class="item" v-if="$slots.after"><slot name="after"></slot></li>
   </ul>
 
 </template>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Login from '@/components/Login'
+import Login from '@/components/SignIn'
 import SignUp from '@/components/SignUp'
 import NotFound from '@/components/NotFound'
 
