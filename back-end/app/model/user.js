@@ -37,6 +37,22 @@ module.exports = app => {
     site:  {
       type: STRING,
     },
+    answerCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+    questionCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+    followerCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+    followingCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
     createdAt: DATE,
     updatedAt: DATE,
   }, {
@@ -60,7 +76,7 @@ module.exports = app => {
 
     // 关注我的人
     app.model.User.belongsToMany(app.model.User,
-       {  as: 'followers', through: 'user_follow_user_relation', foreignKey: 'following_id'});
+       {  as: 'follower', through: 'user_follow_user_relation', foreignKey: 'following_id'});
     // 我关注的人
     app.model.User.belongsToMany(app.model.User,
       {  as: 'followingUsers', through: 'user_follow_user_relation', foreignKey: 'follower_id'});

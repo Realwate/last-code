@@ -9,45 +9,78 @@ class UserService extends Service {
   get modelName() {
     return 'User'
   }
-  async getUserProfile(id) { // 用户主页
-    const ctx = this.ctx;
-    let user = await this.dao.findOne({
-      where: {
-        id: id,
-      },
-      include: [{ model: ctx.model.Question, as: "question" }]
-    });
-    let following = await user.countFollowing();
-    let follower = await user.countFollower();
+  get createRule() {
+    return {
+      fields: ['name', 'password', 'site', 'avatarUrl', 'company', 'description'],
+      rule: {
+        name: [
+          this.Validator.require('用户名不能为空！'),
+          this.Validator.custom('用户名已存在！', this.nameCanUse.bind(this)),
+        ],
+        password: [
+          this.Validator.require('密码不能为空！'),
+          this.Validator.match('密码必须由字母数字组成！', /(?=\D*\d)(?=.*[a-zA-Z])/),
+        ],
+      }
+    };
 
-    let res = user.get({ plain: true });
-    res.following = following;
-    res.follower = follower;
-    return res;
   }
-  async getFollowingTags(id) {
-    let user = await this.dao.findById(id);
-    let tags = await user.getFollowingTags();
-    return tags;
+  get updateRule() {
+    return this.createRule;
   }
-  async getFollowingUsers(id) {
-    let user = await this.dao.findById(id);
-    let follower = await user.getFollowingUser();
-    return follower;
+  async nameCanUse(name, curUser) {
+    const user = await this.findOneByFilter({ name });
+    return curUser.id == user.id || user == null;
   }
-  async getFollowingQuestion(id) {
-    let user = await this.dao.findById(id);
-    let questions = await user.getFollowingQuestion();
+  async getUserProfile(userId, loggedInUserId) { // 用户主页
+    let users = await this.getUserInfo([userId], loggedInUserId);
+    return users[0]
+  }
+  async getUserInfo(userIds, loggedInUserId) {
+    // 包含 followerCount followingCount hasFollowed
+
+    let users = await this.dao.findAll({
+      where: {
+        id: { [this.Op.in]: userIds }
+      }
+    });
+    let followInfo = await this.rawQuery(
+      ' select following_id from user_follow_user_relation where  follower_id=?',
+      loggedInUserId);
+    let followedMap = followInfo.reduce((map, info) => {
+      map[info['following_id']] = true;
+      return map;
+    }, {});
+    users = this.jsonModel(users);
+    for (let user of users) {  // 添加 hasFollowed
+      if (user.id == loggedInUserId) {
+        continue;
+      }
+      user.hasFollowed = !!followedMap[user.id];
+    }
+    return users;
+  }
+  async getFollowingUsers(viewingUserId,loggedInUserId) {
+    let user = await this.dao.findById(viewingUserId);
+    let followers = await user.getFollowingUsers();
+    let ids = followers.map((follower) => follower.id);
+    return this.getUserInfo(ids, loggedInUserId);
+  }
+  async getFollowingQuestions(userId) {
+    let followingQuestions = await this.rawQuery('select question_id from user_follow_question_relation where user_id=?', userId);
+    let followingQuestionIds = followingQuestions.map(question => question.question_id);
+    let questions = await this.getService('question').getQuestionByIds(followingQuestionIds);
     return questions;
   }
   async addFollower(userId, followerId) {
     let user = await this.findById(userId);
     let follower = await this.findById(followerId);
-    let res = await user.hasFollower(follower);
-    if (res) {
+    if (await user.hasFollower(follower)) {
       this.throwError();
     }
-    user.addFollower(follower);
+    await user.addFollower(follower);
+    user.increment('follower_count', { by: 1 });
+    follower.increment('following_count', { by: 1 });
   }
   async deleteFollower(userId, followerId) {
     let user = await this.findById(userId);
@@ -55,7 +88,9 @@ class UserService extends Service {
     if (!await user.hasFollower(follower)) {
       this.throwError();
     }
-    user.addFollower(follower);
+    await user.removeFollower(follower);
+    user.increment('follower_count', { by: -1 });
+    follower.increment('following_count', { by: -1 });
   }
 
 }

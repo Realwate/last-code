@@ -13,7 +13,7 @@ class SystemController extends Controller {
     this.success(result);
   }
   async getSimilarUsers() {
-    let result = await this.service.getSimilarUsers(this.userId);
+    let result = await this.service.getSimilarUsers(this.loggedInUserId);
     this.success(result);
   }
 }

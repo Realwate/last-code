@@ -6,7 +6,7 @@ let ctx;
 const fs = require('fs')
 const path = require('path')
 
-const fileName = path.join(__dirname,'./import.json')
+const fileName = path.join(__dirname, './import.json')
 const userNames = 'Admin,Jack,Mike,Rose,Peter,Tom,Lucy,Lily,Momo,August'.split(',');
 let tagNames = new Set();
 for (let question of questions) { // 记录tagName
@@ -55,16 +55,16 @@ describe('import data', () => {
     answerService = ctx.service.answer;
     userService = ctx.service.user;
     timelineService = ctx.service.timeline;
-    if(fs.existsSync(fileName)){
+    if (fs.existsSync(fileName)) {
       let content = fs.readFileSync(fileName);
       content = JSON.parse(content);
       userModelMap = content.userModelMap;
       tagModelMap = content.tagModelMap;
-    }else{
+    } else {
       // await app.model.sync({force:true});
       await createUser();
       await createTag();
-      fs.writeFileSync(fileName,JSON.stringify({userModelMap,tagModelMap}));
+      fs.writeFileSync(fileName, JSON.stringify({ userModelMap, tagModelMap }));
     }
   })
   it.only('create question and answer success', async () => {
@@ -73,14 +73,13 @@ describe('import data', () => {
       if (!question.answer) {
         continue
       }
-      let randUsers = getRandomUser(ANSWER_COUNT+1).map(name => userModelMap[name]);
-      let tagIds = question.tags.map((tagName) => tagModelMap[tagName]);
+      let randUsers = getRandomUser(ANSWER_COUNT + 1).map(name => userModelMap[name]);
+      let tags = question.tags.map((tagName) => { return {id: tagModelMap[tagName]} });
 
       let createdQues = await questionService.create(randUsers[0], {
-        ref: { tagIds }, main: {
-          title: question.title,
-          content: question.content
-        }
+        title: question.title,
+        content: question.content,
+        tags
       })
 
       let len = Math.min(question.answer.length, ANSWER_COUNT); // 最多3个回答
@@ -88,10 +87,8 @@ describe('import data', () => {
       for (let i = 0; i < len; i++) {
         let answer = question.answer[i];
         ans.push(answerService.create(randUsers[i + 1], { // 创建完后再推荐
-          main: {
-            question_id: createdQues.id,
-            content: answer
-          }
+          question_id: createdQues.id,
+          content: answer
         }));
       }
     }
@@ -103,18 +100,17 @@ describe('import data', () => {
     let userName = getRandomUser(1)[0];
     let userId = userModelMap[userName];
     let items = await timelineService.getRecommendedItem(userId)
-    let users = await timelineService.getSimilarUser(userId)
     console.log('end')
   });
   it('return latest items ', async () => {
     let userName = getRandomUser(1)[0];
     let userId = userModelMap[userName];
     let items = await timelineService.getRecentItem(userId);
-    questionIds = items.map((item)=>item.id);
+    questionIds = items.map((item) => item.id);
     console.log('end')
   });
   it('return question detail ', async () => {
-    let i = getRandom(0,10);
+    let i = getRandom(0, 10);
     let detail = await questionService.getQuestionDetail(questionIds[i])
     console.log('end')
   });

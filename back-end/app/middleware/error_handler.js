@@ -19,14 +19,14 @@ module.exports = (options,app) => {
       // 其他运行时错误
       ctx.app.emit('error', err, ctx);
       ctx.logger.error(err);
-      JSONResult.wrap('Internal server error', null, ctx);
+      JSONResult.wrap(`Internal server error ${ctx.path}`, null, ctx);
     } finally {
       if (ctx.app.config.env == 'local') {
         // 跨域请求
         const res = ctx.response;
         res.set('Access-Control-Allow-Origin', '*');
         res.set('Access-Control-Allow-Headers', 'Authorization,Origin, X-Requested-With, Content-Type, Accept');
-        res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PATCH,PUT');
       }
     }
   };

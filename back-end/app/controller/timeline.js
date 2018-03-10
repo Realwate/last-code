@@ -10,15 +10,15 @@ class TimelineController extends Controller {
     return 'timeline';
   }
   async getHottestItem(){
-    let res = await this.service.getHottestItem(this.userId);
+    let res = await this.service.getHottestItem(this.loggedInUserId);
     this.success(res);
   }
   async getRecentItem(){
-    let res = await this.service.getRecentItem(this.userId);
+    let res = await this.service.getRecentItem(this.loggedInUserId);
     this.success(res);
   }
   async getRecommendedItem(){
-    let res = await this.service.getRecommendedItem(this.userId);
+    let res = await this.service.getRecommendedItem(this.loggedInUserId);
     this.success(res);
   }
 }

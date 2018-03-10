@@ -53,7 +53,7 @@ module.exports = app => {
 
     // 关注问题的user
     app.model.Question.belongsToMany(app.model.User,
-      { as: 'followedUsers', through: 'user_follow_question_relation', foreignKey: 'question_id' });
+      { as: 'follower', through: 'user_follow_question_relation', foreignKey: 'question_id' });
     // 问题的标签
     app.model.Question.belongsToMany(app.model.Tag,
       { as: 'tags', through: 'question_tag_relation', foreignKey: 'question_id' });

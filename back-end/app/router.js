@@ -10,12 +10,12 @@ module.exports = app => {
   router.resources('user', '/api/user', app.controller.user);
   router.get('/api/user/:userId/following-questions',  app.controller.user.getFollowingQuestions);
   router.get('/api/user/:userId/following-users',  app.controller.user.getFollowingUsers);
-  router.get('/api/user/:userId/following-tags',  app.controller.user.getFollowingTags);
+  router.get('/api/user/:userId/following',  app.controller.user.getAllFollowing);
 
 
   // 问题
   router.post('/api/question', app.controller.question.create);
-  router.get('/api/question/query', app.controller.question.queryQuestionByKeyword);
+  router.get('/api/question/query', app.controller.question.queryQuestionByKeywords);
   router.get('/api/question/:questionId', app.controller.question.show);
   router.post('/api/question/:questionId/views', app.controller.question.addViews);
   router.post('/api/question/:questionId/vote', app.controller.question.addVote);
@@ -37,6 +37,13 @@ module.exports = app => {
 
   router.post('/api/question/:questionId/follower',app.controller.question.addFollower);
   router.delete('/api/question/:questionId/follower',app.controller.question.deleteFollower);
+
+  // tag
+  router.get('/api/tag', app.controller.tag.getAllTag);
+  router.get('/api/tag/query', app.controller.tag.queryTagByKeywords);
+  router.get('/api/tag/:tagId', app.controller.tag.getTagDetail);
+  // 带有count信息的通过tag找
+  router.get('/api/user/:userId/following-tags',  app.controller.tag.getUserTag);
 
   // 系统信息
   router.get('/api/system', app.controller.system.getSystemInfo);

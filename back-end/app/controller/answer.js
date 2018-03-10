@@ -10,17 +10,17 @@ class AnswerController extends Controller {
   }
   async addVote() {
     let answerId = this.ctx.params.answerId;
-    let res = await this.service.addVote(answerId,this.userId,this.body);
+    let res = await this.service.addVote(answerId,this.loggedInUserId,this.body);
     this.success(res);
   }
   async deleteVote() {
     let answerId = this.ctx.params.answerId;
-    let res = await this.service.deleteVote(answerId,this.userId,this.body);
+    let res = await this.service.deleteVote(answerId,this.loggedInUserId,this.body);
     this.success(res);
   }
   async create(){
-    let res = await this.service.create(this.userId,this.body);
-    this.success({id:res.id});
+    let res = await this.service.create(this.loggedInUserId,this.body);
+    this.success(res);
   }
   async getAnswerByUser(){
     let userId = this.ctx.params.userId;

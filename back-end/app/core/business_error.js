@@ -1,11 +1,13 @@
 
 class BusinessError extends Error {
-  constructor(msg, type = BusinessError.TYPE.COMMON) {
+  constructor(msg, code = BusinessError.ERROR.DEFAULT) {
     super(msg);
-    this.type = type;
+    this.code = code;
   }
 }
-BusinessError.TYPE = {
-  COMMON: '1',
+BusinessError.ERROR = {
+  RUNTIME:500,
+  DEFAULT: 1,
+  LOGIN: 403,
 };
 module.exports = BusinessError;

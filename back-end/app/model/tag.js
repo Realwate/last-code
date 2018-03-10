@@ -15,6 +15,14 @@ module.exports = app => {
       type: STRING,
       allowNull: false,
     },
+    followerCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
+    itemCount: {
+      type: INTEGER,
+      defaultValue: 0
+    },
     description: TEXT,
     iconUrl: STRING,
     createdAt: DATE,
@@ -28,7 +36,7 @@ module.exports = app => {
 
     // 关注的用户
     app.model.Tag.belongsToMany(app.model.User,
-      { as: 'followedUsers', through: 'user_follow_tag_relation', foreignKey: 'tag_id' });
+      { as: 'follower', through: 'user_follow_tag_relation', foreignKey: 'tag_id' });
   };
 
   return Tag;

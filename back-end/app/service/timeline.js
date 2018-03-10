@@ -7,49 +7,30 @@ class TimelineService extends Service {
     super(ctx);
     this.recommender = ctx.app.recommender;
   }
-  constructWhere(ids) {
-    let res = ids.map((id) => `'${id}'`).join(",")
-    return ` (${res}) `;
-  }
   async getHottestItem(userId) { // 热度
 
   }
   async getRecentItem(userId) { // 最新的
-    let tags = await this.getService('tag').getTagByUser(userId);
+    let followedTags = await this.getService('tag').getUserTag(userId);
     let questionIds;
-    if(tags == null || tags.length == 0){ // 没有关注tag
-      return this.getQuestions();
+    if (followedTags == null || followedTags.length == 0) { // 没有关注tag
+      return this.getQuestionByIds();
     }
+    let tagIds = followedTags.map((tag) => tag.id);
+    let sql = 'select distinct question_id from question_tag_relation where tag_id in' + this.constructWhere(tagIds)
+    questionIds = await this.rawQuery(sql);
 
-      let sql = 'select distinct question_id from question_tag_relation where tag_id in' + this.constructWhere(tags)
-      questionIds = await this.rawQuery(sql);
-
-    return this.getQuestions(questionIds);
+    return this.getQuestionByIds(questionIds.map((obj) => obj.question_id));
   }
   async getRecommendedItem(userId) { // 推荐的
-    let questionIds = await this.recommender.getRecommendedItemsFromCache(userId,{count:20});
+    let questionIds = await this.recommender.getRecommendedItemsFromCache(userId, { count: 20 });
     if (questionIds == null) {
       return this.getRecentItem(userId);
     }
-    return this.getQuestions(questionIds);
+    return this.getQuestionByIds(questionIds);
   }
-  async getQuestions(questionIds) {
-    const ctx = this.ctx;
-    let whereClause = {};
-    if(questionIds){
-      whereClause = { id:{[this.Op.in]: questionIds }}
-    }
-    let questions = await this.getDao('Question').findAll({
-      where: whereClause,
-      include: [
-        { model: ctx.model.Tag, as: "tags" },
-        { model: ctx.model.User, as: "creator" },
-      ],
-      order: [['created_at', 'DESC']],
-      offset: 0,
-      limit: 20
-    });
-    return questions;
+  async getQuestionByIds(questionIds) {
+    return this.getService('question').getQuestionByIds(questionIds);
   }
 }
 
