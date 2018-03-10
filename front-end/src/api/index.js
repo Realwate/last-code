@@ -3,18 +3,13 @@ import store from '../store'
 import NProgress from 'nprogress'
 import {baseUrl} from '../config/env'
 import Msg from '../plugins/msg'
+import router from '../router'
 
 //全局axios默认设置
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const authAxios = axios.create();
 authAxios.defaults.headers.post['Content-Type'] = 'application/json';
-
-let token = store.state.token;
-if (token) {
-  //发送需要认证的请求 带上token 后台会校验后再返会
-  authAxios.defaults.headers.common['Authorization'] = "Bearer " + token;
-}
 
 //拦截请求响应，控制顶部进度条
 authAxios.interceptors.request.use(config => {
@@ -49,10 +44,29 @@ function resolveResult(res) {
     .then(({success, error, data}) => {
       if (!success) { // 统一错误处理
         Msg.alertError(error.message)
+        if(error.code === 403){
+          router.push({name:'login'})
+          return
+        }
+        console.error(error);
         throw new Error(error.message);
       }
       return data
     })
+}
+
+function setAxiosToken(token) {
+  if (!token) {
+    authAxios.defaults.headers.common['Authorization'] = undefined;
+    return;
+  }
+  //发送需要认证的请求 带上token 后台会校验
+  authAxios.defaults.headers.common['Authorization'] = "Bearer " + token;
+}
+setAxiosToken(store.state.token);
+
+export {
+  setAxiosToken
 }
 
 export default {
@@ -79,5 +93,56 @@ export default {
   },
   getTagByUser(userId) {
     return getApi(`/api/user/${userId}/following-tags`);
-  }
+  },
+  getAllTag() {
+    return getApi(`/api/tag`);
+  },
+  tagAddFollower(tagId) {
+    return postApi(`/api/tag/${tagId}/follower`);
+  },
+  tagRemoveFollower(tagId) {
+    return postApi(`/api/tag/${tagId}/follower`, null, 'delete');
+  },
+  getTagDetail(tagId) {
+    return getApi(`/api/tag/${tagId}`);
+  },
+  saveQuestion(params) {
+    return postApi(`/api/question`, params);
+  },
+  getUserProfile(userId) {
+    return getApi(`/api/user/${userId}`);
+  },
+  updateUserProfile(userId, user) {
+    return postApi(`/api/user/${userId}`, user, 'patch');
+  },
+  getUserQuestion(userId) {
+    return getApi(`/api/user/${userId}/question`);
+  },
+  getUserAnswer(userId) {
+    return getApi(`/api/user/${userId}/answer`);
+  },
+  getUserFollow(userId) {
+    return getApi(`/api/user/${userId}/following`);
+  },
+  addUserFollower(userId) {
+    return postApi(`/api/user/${userId}/follower`);
+  },
+  removeUserFollower(userId) {
+    return postApi(`/api/user/${userId}/follower`, null, 'delete');
+  },
+  addQuestionFollower(questionId) {
+    return postApi(`/api/question/${questionId}/follower`);
+  },
+  removeQuestionFollower(questionId) {
+    return postApi(`/api/question/${questionId}/follower`, null, 'delete');
+  },
+  addAnswer(params) {
+    return postApi(`/api/answer`, params);
+  },
+  searchQuestion(keywords) {
+    return getApi(`/api/question/query?keywords=${keywords}`);
+  },
+  searchTag(keywords) {
+    return getApi(`/api/tag/query?keywords=${keywords}`);
+  },
 }

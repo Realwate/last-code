@@ -10,7 +10,7 @@
             <el-input v-model="user.name"></el-input>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="user.password"></el-input>
+            <el-input auto-complete="off" type="password" v-model="user.password"></el-input>
           </el-form-item>
           <el-form-item label="工作地">
             <el-input v-model="user.company"></el-input>
@@ -30,18 +30,12 @@
   </div>
 </template>
 <script>
-  import {mapState} from 'vuex'
+  import {mapGetters} from 'vuex'
   export default {
     data() {
       return {
         isLoading: false,
-        user: {
-          name: "",
-          password: "",
-          company: "BigBen",
-          site: "https://ddd",
-          description: 'f',
-        },
+        user: {},
         rules: {
           /*对应prop*/
           name: [{
@@ -53,20 +47,26 @@
         }
       }
     },
-    computed: mapState([
-      'userId'
+    computed: mapGetters([
+      'loggedInUserId'
     ]),
     methods: {
       save() {
-        this.$refs.user.validate((valid) => {
+        this.$refs.user.validate(async (valid) => {
           if (!valid) {
             return;
           }
+          await this.$api.updateUserProfile(this.loggedInUserId,this.user);
+          this.alertSuccess('更新成功！');
+          setTimeout(()=>{
+            this.$router.push({name:'userProfile',params:{userId:this.user.id}})
+          },800)
         });
       },
     },
-    created() {
-      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '个人资料'})
+    async created() {
+      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '个人资料'});
+      this.user = await this.$api.getUserProfile(this.loggedInUserId);
     },
     components: {}
   }

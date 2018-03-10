@@ -10,6 +10,7 @@ import Timeline from '@/components/main/timeline/Timeline'
 
 import QuestionDetail from '@/components/main/question/QuestionDetail'
 import QuestionAsk from '@/components/main/question/QuestionAsk'
+import QuestionSearch from '@/components/main/question/QuestionSearch'
 
 import TagDetail from '@/components/main/tag/TagDetail'
 import TagManagement from '@/components/main/tag/TagManagement'
@@ -33,11 +34,13 @@ let routes = [
       {path: 'timeline', component: Timeline, name: 'timeline'},
       {path: 'question/:questionId', component: QuestionDetail, name: 'questionDetail'},
       {path: 'ask', component: QuestionAsk, name: 'questionAsk'},
+      {path: 'search', component: QuestionSearch, name: 'questionSearch',
+        props:(route)=>({keywords:route.query.keywords})},
 
       {path: 'tag', component: TagManagement, name: 'tagManagement'},
       {path: 'tag/:tagId', component: TagDetail, name: 'tagDetail'},
 
-      {path: 'profile/:userId/activities', component: UserProfile, name: 'userProfile'},
+      {path: 'profile/:userId/activities', component: UserProfile, name: 'userProfile',props:true},
       {path: 'profile/edit', component: UserSetting, name: 'userSetting'},
     ],
     meta: {requiresAuth: true}

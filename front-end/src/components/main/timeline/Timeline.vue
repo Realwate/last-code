@@ -7,7 +7,7 @@
             <li class="nav-item" :class="{active:currentTab === 'recent'}"
                 @click="getRecentItems">最新
             </li>
-            <li class="nav-item">热门</li>
+            <!--<li class="nav-item">热门</li>-->
             <li class="nav-item" :class="{active:currentTab === 'recommend'}" @click="getRecommendedItems">推荐</li>
           </ul>
         </nav>
@@ -23,9 +23,10 @@
   import TimelineSidebar from './TimelineSidebar'
 
   export default {
+    name:'Timeline',
     data() {
       return {
-        currentTab: "recentItem",
+        currentTab: "recent",
         loading: false,
         questions: []
       }
@@ -46,8 +47,10 @@
       }
     },
     created() {
+    },
+    activated(){
       this.$store.dispatch('ChangeNavHeader');
-      this.getRecentItems();
+      this.changeTab();
     },
     components: {
       TimelineEntry, TimelineSidebar

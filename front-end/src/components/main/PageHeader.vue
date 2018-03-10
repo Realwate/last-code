@@ -9,8 +9,8 @@
           <nav class="main-nav flex1">
             <ul class="nav-list">
               <li class="flex1"></li>
-              <li class="nav-item search">
-                <el-input v-model="keywords" size="small" placeholder="搜索">
+              <li class="nav-item search" :class="{'is-focus':searchFocus}">
+                <el-input @keyup.enter.native="search" @blur="searchFocus=false" @focus="searchFocus=true" v-model="keywords" size="small" placeholder="搜索">
                   <i slot="suffix" class="el-icon-search" @click="search"></i>
                 </el-input>
               </li>
@@ -44,23 +44,24 @@
   </transition>
 </template>
 <script>
-  import {mapState} from 'vuex'
+  import {mapGetters} from 'vuex'
   import NavHeader from './NavHeader'
 
   export default {
     data() {
       return {
+        searchFocus:false,
         keywords: "",
         notificationCount: 99,
         showPageHeader: true,
       }
     },
-    computed: mapState([
-      'userId',
+    computed: mapGetters([
+      'loggedInUserId',
     ]),
     methods: {
       toUserProfile() {
-        this.$router.push({name: 'userProfile', params: {userId: this.userId}})
+        this.$router.push({name: 'userProfile', params: {userId: this.loggedInUserId}})
       },
       toTag() {
         this.$router.push({name: 'tagManagement'})
@@ -76,7 +77,8 @@
         this.$store.dispatch('UserLogout');
       },
       search() {
-
+        console.log(this.keywords)
+        this.$router.push({name:"questionSearch",query:{keywords:this.keywords}})
       },
       showNotification() {
       },
@@ -135,7 +137,6 @@
     right: 0;
     z-index: 100;
   }
-
   .fade-enter-active, .fade-leave-active {
     transition: all .1s ease-in;
   }
@@ -163,7 +164,11 @@
   }
 
   .search {
-    flex: 0 0 30%;
+    flex: 0 0 25%;
+    transition:all 0.1s ease-in;
+  }
+  .search.is-focus{
+    flex:0 0 40%;
   }
 
   .notification {

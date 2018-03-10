@@ -1,43 +1,50 @@
 <template>
-  <ul class="tag-inline-list" >
-    <li class="item" v-if="$slots.before"><slot name="before"></slot></li>
+  <ul class="tag-inline-list">
+    <li class="item" v-if="$slots.before">
+      <slot name="before"></slot>
+    </li>
     <li class="item tag-inline" v-for="tag in tags" :key="tag.id" @click="toTagDetail(tag.id)" v-text="tag.name"></li>
-    <li class="item" v-if="$slots.after"><slot name="after"></slot></li>
+    <li class="item" v-if="$slots.after">
+      <slot name="after"></slot>
+    </li>
   </ul>
 
 </template>
 <script>
   export default {
     data() {
-      return {
-      }
+      return {}
     },
     methods: {
-      toTagDetail(tagId){
-        this.$router.push({path:`/tag/${tagId}`})
+      toTagDetail(tagId) {
+        this.$router.push({path: `/tag/${tagId}`})
       },
     },
-    props:['tags'],
+    props: ['tags'],
 
   }
 </script>
 <style scoped>
-  .tag-inline-list{
+  .tag-inline-list {
     display: inline-block;
   }
-  .item{
+
+  .item {
     display: inline-block;
   }
-  .tag-inline{
+
+  .tag-inline {
     cursor: pointer;
     padding: 2px 3px;
     color: #409eff;
     border-radius: 2px;
-    background-color: rgba(64,158,255,.1);
+    background-color: rgba(64, 158, 255, .1);
   }
-  .tag-inline+.tag-inline{
+
+  .tag-inline + .tag-inline {
     margin-left: 5px;
   }
+
   .tag-inline:hover {
     background-color: rgba(64, 158, 255, .3);
   }

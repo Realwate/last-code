@@ -4,7 +4,7 @@
       <h2 class="lg-font" v-text="tag.name"></h2>
       <tag-info :tag="tag"></tag-info>
     </header>
-    <timeline-entry :questions="questions">
+    <timeline-entry :questions="tag.questions">
     </timeline-entry>
   </div>
 </template>
@@ -13,29 +13,22 @@
   import TagInfo from './TagInfo'
 
   export default {
+    name: 'TagDetail',
     data() {
       return {
-        tag: {
-          id: '2f',
-          name: '前端框架',
-          followerCount: 12,
-          questionCount: 48,
-        },
-        questions: [
-          {
-            id: 'fff', creator: {name: 'aa'}, createdAt: 1519509611477,
-            title: "如何学习javascript?",
-            tags: ['前端', 'javascipt'],
-            answerCount: 12, voteCount: 3, followerCount: 4
-          },
-
-        ]
+        tag:{
+          questions:[]
+        }
       }
     },
     methods: {},
-    created() {
-      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '标签详情'})
+    async created() {
+      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '标签详情'});
+      this.$on('update:tag', ({tag}) => {
+        this.tag = tag;
+      });
       let {tagId} = this.$route.params;
+      this.tag = await this.$api.getTagDetail(tagId);
     },
     components: {
       TimelineEntry, TagInfo

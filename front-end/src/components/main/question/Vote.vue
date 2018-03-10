@@ -9,7 +9,11 @@
   export default {
     data() {
       return {
-        currentVote: this.voteCount,
+      }
+    },
+    computed:{
+      currentVote(){
+        return this.voteCount
       }
     },
     methods: {

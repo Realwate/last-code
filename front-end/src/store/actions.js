@@ -21,15 +21,14 @@ export default {
   UserLogin({commit}, token) {
     commit('USER_SIGNIN', token)
   },
-  async ChangeNavHeader({commit, state}, data) {
+  async ChangeNavHeader({commit, state,getters }, data) {
     let {version, valid} = getVersion('navHeader');
     // 一样不更新
-    if (data == null && state.navHeader.tags) {
-      commit('NAV_HEADER_CHANGE', {type: null});
+    if (data == null && state.navHeader.type === null) {
       return;
     }
     if (data == null) {
-      let tags = await api.getTagByUser(state.userId);
+      let tags = await api.getTagByUser(getters.loggedInUserId);
       valid(version) && commit('NAV_HEADER_CHANGE', {type: null, tags});
       return;
     }

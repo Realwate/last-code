@@ -12,7 +12,10 @@
         </div>
         <div class="info">
           <div class="title-box">
-            <h1 class="title" @click="toQuestionDetail(question.id)" v-text="question.title"></h1>
+            <h1 class="title" @click="toQuestionDetail(question.id)"
+                v-html="keywords?$util.highlightText(question.title,keywords):question.title">
+
+            </h1>
             <tag-inline-list :tags="question.tags"></tag-inline-list>
           </div>
           <ul class="list bottom-list">
@@ -45,7 +48,7 @@
         this.$router.push({path:`/tag/${tagId}`})
       },
     },
-    props:['questions'],
+    props:['questions','keywords'],
     components:{
       TagInlineList
     }
@@ -56,6 +59,7 @@
   .entry-list-item{
     padding: 5px 15px;
     border: 1px dashed #ccc;
+    border-radius: 3px;
     margin-bottom: 10px;
   }
   .meta{

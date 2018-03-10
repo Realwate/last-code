@@ -66,7 +66,14 @@ function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
   document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
   return true;
 }
+function escape(s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+function highlightText(text,keywords){
+  let reg = new RegExp(escape(keywords),'gi');
+  return text.replace(reg, '<span class="highlight-text">$&</span>')
+}
 
 export default {
-  formatDate,getCookie,setCookie
+  formatDate,getCookie,setCookie,highlightText
 }

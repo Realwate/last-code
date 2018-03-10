@@ -61,8 +61,8 @@
         if (this.selectedTag[name] != null) { // 已存在
           return;
         }
-        let len = this.question.tags.push(item);
-        this.selectedTag[name] = len - 1;
+        let len = this.question.tags.push({id:item.id,name:item.name});
+        this.selectedTag[name] = len - 1; // name,index
       },
       removeTag(item) {
         let name = item.name;
@@ -70,15 +70,17 @@
         this.selectedTag[name] = null;
         this.question.tags.splice(index, 1)
       },
-      save() {
-        console.log(this.question)
+      async save() {
+        let res = await this.$api.saveQuestion(this.question);
+        this.alertSuccess('发布成功!');
+        setTimeout(()=>{
+          this.$router.push({name:'questionDetail',params:{questionId:res.id}})
+        },1000)
       },
     },
-    created() {
+    async created() {
       this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '提问'})
-      setTimeout(() => {
-        this.allTags = [{id: 'wfa', name: 'android'}, {id: 'ffa', name: 'javascript'}, {id: 'ff', name: 'vue'}]
-      }, 300);
+      this.allTags = await this.$api.getAllTag();
 
     },
     components: {

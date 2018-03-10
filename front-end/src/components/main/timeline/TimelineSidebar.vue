@@ -2,9 +2,9 @@
   <aside class="sidebar hidden-sm-and-down">
     <section class="sidebar-block shadow">
       <ul class="nav-list vertical">
-        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'question' }}" class="nav-item" tag="li"> 我的提问 </router-link>
-        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'answer' }}" class="nav-item" tag="li"> 我的回答 </router-link>
-        <router-link :to="{ name: 'userProfile',params:{userId},query: { panel: 'follow' }}" class="nav-item" tag="li"> 我的关注 </router-link>
+        <router-link :to="{ name: 'userProfile',params:{userId:loggedInUserId},query: { panel: 'questions' }}" class="nav-item" tag="li"> 我的提问 </router-link>
+        <router-link :to="{ name: 'userProfile',params:{userId:loggedInUserId},query: { panel: 'answeredQuestions' }}" class="nav-item" tag="li"> 我的回答 </router-link>
+        <router-link :to="{ name: 'userProfile',params:{userId:loggedInUserId},query: { panel: 'following' }}" class="nav-item" tag="li"> 我的关注 </router-link>
       </ul>
     </section>
     <section class="sidebar-block shadow" v-show="similarUsers && similarUsers.length > 0">
@@ -33,7 +33,7 @@
   </aside>
 </template>
 <script>
-  import { mapState } from 'vuex'
+  import { mapGetters } from 'vuex'
   import UserProfile from '@/components/main/profile/UserProfile'
   export default {
     data() {
@@ -43,8 +43,8 @@
         similarUsers:[]
       }
     },
-    computed: mapState([
-      'userId'
+    computed: mapGetters([
+      'loggedInUserId'
     ]),
     methods: {
     },

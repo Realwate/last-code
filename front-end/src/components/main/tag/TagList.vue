@@ -4,11 +4,11 @@
       <div class="tag-box">
         <div class="desc">
           <router-link :to="{path:`tag/${tag.id}`}">
-            <img class="tag-icon" :src="tag.iconUrl" >
+            <img class="avatar-40" src="../../../assets/image/tag-default.png" >
             <h3 class="tag-name" v-text="tag.name"></h3>
           </router-link>
         </div>
-        <tag-info :tag="tag"></tag-info>
+        <tag-info :tag="tag" :index="index"></tag-info>
       </div>
     </el-col>
   </el-row>
@@ -46,10 +46,6 @@
     border-radius: 5px;
     padding:20px 10px;
 
-  }
-  .tag-icon{
-    height: 34px;
-    width: 100%;
   }
   .tag-name{
     color: #555;

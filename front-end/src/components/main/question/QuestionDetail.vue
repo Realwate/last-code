@@ -13,6 +13,13 @@
         <div class="date">
           <span v-text="$util.formatDate(question.createdAt)"></span>提问
         </div>
+        <div class="follower-box fr">
+          <el-button class="follow-btn" @click="removeQuestionFollower" v-if="question.hasFollowed" type="primary"
+                     size="mini">已关注
+          </el-button>
+          <el-button class="follow-btn" @click="addQuestionFollower" v-else plain size="mini">关注</el-button>
+          <span> <strong v-text="question.followerCount">5</strong> 关注 </span>
+        </div>
       </div>
     </div>
     <div class="question-detail section-block">
@@ -25,7 +32,7 @@
       </h4>
 
       <ul v-if="question.answers.length > 0">
-        <li class=" section-block" v-for="answer in question.answers">
+        <li class="section-block" v-for="answer in question.answers">
           <vote :voteCount="answer.voteCount"></vote>
           <div class="content-wrapper">
             <div v-html="answer.content"></div>
@@ -45,14 +52,14 @@
         </li>
       </ul>
     </div>
-    <div class="mt10" >
+    <div class="mt10">
       <div v-if="hasAnswered">
         <h4 class="area-title">这个问题你已经提交过回答了~</h4>
       </div>
       <div v-else>
         <h4 class="area-title">撰写答案</h4>
-        <answer-editor v-model="answer"></answer-editor>
-        <el-button class="mt10" size="medium" type="primary">提交回答</el-button>
+        <answer-editor v-model="answerContent"></answer-editor>
+        <el-button class="mt10" size="medium" type="primary" @click="commitAnswer">提交回答</el-button>
       </div>
     </div>
   </div>
@@ -62,27 +69,44 @@
   import Vote from './Vote'
   import AnswerEditor from './AnswerEditor'
   import NavHeader from '../NavHeader'
-  import { mapState } from 'vuex'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
       return {
         question: {
-          creator:{},
-          answers:[]
+          creator: {},
+          answers: []
         },
-        answer: ''
+        answerContent: ''
       }
     },
-    computed:{
-      ...mapState([
-                 'userId'
-               ]),
-      hasAnswered(){
-        return this.question.answers.map((answer)=>answer.author.id).includes(this.userId)
+    computed: {
+      ...mapGetters([
+        'loggedInUserId'
+      ]),
+      hasAnswered() {
+        return this.question.answers.map((answer) => answer.author.id).includes(this.loggedInUserId)
       }
     },
-    methods: {},
+    methods: {
+      async addQuestionFollower() {
+        let res = await this.$api.addQuestionFollower(this.question.id);
+        this.question.followerCount += 1;
+        this.question.hasFollowed = true;
+      },
+      async removeQuestionFollower() {
+        let res = await this.$api.removeQuestionFollower(this.question.id);
+        this.question.followerCount -= 1;
+        this.question.hasFollowed = false;
+      },
+      async commitAnswer() {
+        let answer = {question_id: this.question.id, content: this.answerContent};
+        let newAnswer = await this.$api.addAnswer(answer);
+        this.question.answers.push(newAnswer);
+        this.alertSuccess('发布答案成功!');
+      }
+    },
     async created() {
       this.$store.dispatch('ChangeNavHeader')
       let {questionId} = this.$route.params;
@@ -117,6 +141,16 @@
     color: #888;
   }
 
+  .follower-box {
+    margin-right: 20px;
+  }
+
+  .follow-btn {
+    min-width: 55px;
+    padding: 7px;
+    margin-right: 3px;
+  }
+
   .section-block {
     padding: 20px 0 10px;
     min-height: 100px;
@@ -144,9 +178,12 @@
   .answer-bottom {
     position: absolute;
     right: 10px;
-    bottom: 2px;
+    bottom: 4px;
   }
 
+  .answer-bottom .author {
+    margin: 0 3px;
+  }
 </style>
 
 

@@ -1,183 +1,215 @@
 @import url('https://fonts.proxy.ustclug.org/css?family=Roboto');
-
 @import "./var.scss";
-*{
+
+* {
   margin: 0;
   padding: 0;
 }
-html{
+
+html {
   height: 100%;
 }
-body{
+
+body {
   height: 100%;
-  background-image:url('../image/bg.png');
-  font:14px/1.5 'Roboto',"webfont","Microsoft YaHei", sans-serif;
-  color:#333;
+  background-image: url('../image/bg.png');
+  font: 14px/1.5 'Roboto', "webfont", "Microsoft YaHei", sans-serif;
+  color: #333;
   background-size: cover;
 }
-ul,li{
+
+ul, li {
   list-style: none;
 }
-a{
+
+a {
   text-decoration: none;
 }
-h1,h2,h3,h4{
+
+h1, h2, h3, h4 {
   font-weight: normal;
 }
-.md-font{
+
+.md-font {
   font-size: 18px;
 }
-.lg-font{
+
+.lg-font {
   font-size: 20px;
 }
-.flex1{
+
+.flex1 {
   flex: 1;
 }
-.pd20{
+
+.pd20 {
   padding: 20px !important;
 }
-.pd30{
+
+.pd30 {
   padding: 30px !important;
 }
-.mb10{
-  margin-bottom: 10px;
+
+.mb10 {
+  margin-bottom: 10px !important;
 }
-.mt10{
-  margin-top: 10px;
+
+.mt10 {
+  margin-top: 10px !important;
 }
-.fl{
+
+.fl {
   float: left;
 }
-.fr{
+
+.fr {
   float: right;
 }
-.dib{
+
+.dib {
   display: inline-block;
 }
-.bb1{
-  border-bottom:1px solid #ccc;
+
+.bb1 {
+  border-bottom: 1px solid #ccc;
 }
-.clearfix{
-  &:after,&:before{
+
+.clearfix {
+  &:after, &:before {
     display: table;
     content: "";
   }
-  &:after{
+  &:after {
     clear: both;
   }
 }
-.avatar{
+
+.avatar {
   background-color: #fff;
-  border-radius:4px;
+  border-radius: 4px;
   vertical-align: bottom;
 }
-.avatar-24{
-  @extend .avatar;
-  width: 24px;
-  height: 24px;
+
+@mixin multi-avatar($size) {
+  .avatar-#{$size} {
+    @extend .avatar;
+    width: #{$size}px;
+    height: #{$size}px;
+  }
 }
 
-.avatar-28{
-  @extend .avatar;
-  width: 28px;
-  height: 28px;
+$avatar-px: 24 28 40 60 140;
+@each $size in $avatar-px {
+  @include multi-avatar($size);
 }
-.avatar-140{
-  @extend .avatar;
-  width: 140px;
-  height: 140px;
-}
+
 .shadow {
-  box-shadow: 1px 1px 4px  rgba(153, 153, 153, 0.3);
+  box-shadow: 1px 1px 4px rgba(153, 153, 153, 0.3);
 }
-.little-shadow{
-  box-shadow: 1px 1px 2px 0 rgba(0,0,0,.1)
+
+.little-shadow {
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, .1)
 }
-.panel{
+
+.panel {
   @extend .little-shadow;
   padding: 10px;
   background-color: #fff;
   box-sizing: border-box;
 }
-.view{
+
+.view {
   min-height: calc(100vh - #{ $main-header-height + 35px});
 }
-.main-panel{
+
+.main-panel {
   @extend .view;
   @extend .panel;
 }
-.main{
+
+.main {
   padding: 10px 0 20px;
-  margin-top:  $main-header-height;
+  margin-top: $main-header-height;
 }
-.container{
+
+.container {
   max-width: 960px;
   margin: 0 auto;
   height: 100%;
 }
-.flex-container{
+
+.flex-container {
   @extend .container;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.nav-icon{
+
+.nav-icon {
   width: 28px;
   height: 28px;
   font-size: 28px;
-  &:hover{
+  &:hover {
     color: #0084FF;
   }
 }
-.list{
+
+.list {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-  &.vertical{
+  &.vertical {
     flex-direction: column;
-    .list-item:not(:last-of-type){
+    .list-item:not(:last-of-type) {
       flex: 1;
       margin-bottom: 15px;
     }
   }
 }
-.align-start{
+
+.align-start {
   align-items: flex-start;
 }
-.justify-start{
+
+.justify-start {
   justify-content: flex-start;
 }
-.list-item{
-  padding:3px 10px;
+
+.list-item {
+  padding: 3px 10px;
   margin: 0 5px;
 }
 
-.nav-list{
+.nav-list {
   @extend .list;
 }
-.nav-item{
+
+.nav-item {
   @extend .list-item;
   cursor: pointer;
-  &.active{
+  &.active {
     color: #0084FF;
   }
-  &:hover{
+  &:hover {
     color: #339dff;
   }
 }
-.link{
+
+.link {
   color: $--color-primary;
-  &:hover{
+  &:hover {
     color: $--color-primary-dark-2;
   }
 }
-.router-link-active{
+
+.router-link-active {
   @extend .link;
 }
+
 .author {
   font-size: 16px;
-  margin: 0 3px;
+  margin: 0 3px 0 15px;
   text-decoration: none;
   color: #333;
   &:hover {
@@ -185,10 +217,23 @@ h1,h2,h3,h4{
     text-decoration: underline;
   }
 }
+
 .small-author {
   @extend .author;
   margin: 0 3px;
   font-size: 15px;
+}
+.empty-text{
+  padding:20px 0;
+  color: #666;
+  text-align: center;
+  font-size: 18px;
+}
+.user-action-button{
+  min-width:80px;
+}
+.highlight-text{
+  background: rgba(255,255,0,0.5);
 }
 
 

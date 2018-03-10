@@ -1,6 +1,6 @@
 <template>
   <div class="nav-header panel">
-    <div class="container">
+    <div class="container nav-header-content">
       <div v-show="navHeader.type === 'title'">
         <h3 class="nav-header-title">
           {{navHeader.title}}
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-  import {mapState} from 'vuex'
+  import {mapState,mapGetters} from 'vuex'
   import TagInlineList from './question/TagInlineList'
 
   export default {
@@ -28,8 +28,9 @@
       return {}
     },
     computed: {
+      ...mapGetters(['loggedInUserId',]),
       ...mapState([
-        'userId', 'navHeader'
+         'navHeader'
       ]),
     },
     components: {
@@ -45,13 +46,15 @@
     box-sizing: border-box;
     background: rgba(255,255,255,.9);
   }
-
+  .nav-header-content{
+    max-height:25px;
+    overflow: hidden;
+  }
   .nav-header-title {
-    font-size: 15px;
-    padding-left: 20px;
-    font-weight: normal;
+    font-size: 18px;
+    font-weight: bold;
     text-align: center;
-    color: #0084ff;
+    color: #555;
   }
 
   .follow {

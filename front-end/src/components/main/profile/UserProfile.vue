@@ -1,27 +1,23 @@
 <template>
   <main>
-    <div class="container panel profile-header">
+    <div class="container panel profile-header mb10">
       <el-row type="flex" :gutter="20">
         <el-col :xs="8" :md="4">
-          <div class="user-avatar-wrapper">
-            <img class="user-avatar" :src="user.avatarUrl" alt="">
+          <div class="user-avatar mb10">
+            <img class="avatar-140" src="https://sfault-avatar.b0.upaiyun.com/364/787/3647877757-58c236fe63c80_huge256"
+                 alt="">
           </div>
         </el-col>
         <el-col :xs="16" :md="8">
           <h1 class="user-name" v-text="user.name"></h1>
-          <div class="user-info">
+          <div class="user-info mt10">
             <div class="user-com"> 工作地：<span v-text="user.company"></span></div>
-            <div class="user-site"> 个人主页： <a v-text="user.site" :href="user.site"></a></div>
-            <div class="action-button">
-              <div v-if="user.isSelf">
-                <el-button size="mini" plain type="primary" @click="toUserEdit">编辑</el-button>
+            <div class="user-site"> 个人主页： <a v-text="user.site" class="link" :href="user.site"></a></div>
+            <div class="action-button-group mt10">
+              <div v-if="isSelf">
+                <el-button class="user-action-button" size="mini" plain @click="toUserEdit">编辑</el-button>
               </div>
-              <div v-else-if="user.hasFollowed">
-                <el-button type="primary" @click="cancelFolloweUser">取消关注</el-button>
-              </div>
-              <div v-else>
-                <el-button plain type="primary" @click="followUser">关注</el-button>
-              </div>
+              <user-follow-button :user.sync="user"></user-follow-button>
             </div>
           </div>
         </el-col>
@@ -32,102 +28,84 @@
         </el-col>
       </el-row>
     </div>
-    <div class="flex-container">
-      <div class="profile-main panel">
-        <el-tabs v-model="activePanel" @tab-click="togglePanel">
-          <el-tab-pane label="提问" name="question">
-          </el-tab-pane>
-          <el-tab-pane label="回答" name="answer">
-          </el-tab-pane>
-          <el-tab-pane label="关注" name="follow">
-
-          </el-tab-pane>
-        </el-tabs>
-      </div>
+    <div class="flex-container align-start ">
+      <user-profile-activity @followingCountChange="followingCountChange"
+                             :panel="panel" :viewingUserId="userId">
+      </user-profile-activity>
       <aside class="profile-sidebar panel">
-        <div>
-          关注了 <strong v-text="user.followingCount"></strong>
+        <div class="side-inner">
+          <div> 关注了</div>
+          <strong v-text="user.followingCount"></strong>
         </div>
-        <div class="follower">
-          关注者 <strong v-text="user.followerCount"> </strong>
+        <div class="side-inner follower">
+          <div>关注者</div>
+          <strong v-text="user.followerCount"> </strong>
         </div>
       </aside>
     </div>
   </main>
 </template>
 <script>
+  import UserFollowButton from './UserFollowButton'
+  import UserProfileActivity from './UserProfileActivity'
+  import {mapGetters} from 'vuex'
+
   export default {
+    name: 'UserProfile',
     data() {
       return {
-        activePanel: 'question',
-        user: {
-          avatarUrl: 'https://sfault-avatar.b0.upaiyun.com/364/787/3647877757-58c236fe63c80_huge256',
-          name: 'Realwate',
-          company: 'Realwate',
-          site: 'Realwate',
-          description: '我命由我不由天',
-          followingCount: 877,
-          followerCount: 812,
-          isSelf: true,
-        }
+        panel: null,
+        user: {},
+        questions: [],
+        answeredQuestions: [],
+        following: {}
       }
     },
+    computed: {
+      ...mapGetters([
+        'loggedInUserId'
+      ]),
+      isSelf() {
+        return this.user.id === this.loggedInUserId;
+      }
+    },
+    props: ['userId'], // route
     methods: {
-      togglePanel() {
-
+      followingCountChange(diffValue) {
+        if (!isSelf) {
+          return;
+        }
+        this.user.follwoingCount += diffValue;
       },
       toUserEdit() {
         this.$router.push({name: 'userSetting'})
       },
-      cancelFolloweUser() {
-
-      },
-      followeUser() {
+      async init() {
+        this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '主页'})
+        let {panel} = this.$route.query;
+        if (panel) {
+          this.panel = panel;
+        }
+        this.user = await this.$api.getUserProfile(this.userId);
       },
     },
     created() {
-      this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '主页'})
-      let {panel} = this.$route.query;
-      if (panel) {
-        this.activePanel = panel;
-      }
+      this.init();
     },
-    components: {}
+    components: {
+      UserProfileActivity, UserFollowButton
+    }
 
   }
 </script>
 <style scoped>
-  .flex-container {
-    align-items: flex-start;
+  .action-button-group {
+    margin: 5px 0;
   }
-
-  .profile-header {
-    margin-bottom: 10px;
-  }
-
-  .profile-main {
-    padding-left: 20px;
-    flex: 1;
-    min-height: 200px;
-  }
-
-  .user-avatar {
-    width: 100%;
-    border-radius: 4px;
-  }
-
-  .user-name {
-    margin: 10px 0;
-  }
-
-  .action-button {
-    margin: 5px 0 0 10px;
-  }
-
   .user-desc {
     border-radius: 5px;
     padding: 20px;
-    background-color: #dcdcdc;
+    background-color: #e5e5e5;
     font-size: 15px;
     overflow: auto;
     height: 100%;
@@ -135,12 +113,19 @@
   }
 
   .profile-sidebar {
+    background-color: #fff;
+    padding: 10px 5px;
     width: 160px;
     margin-left: 10px;
-    display: flex;
-    justify-content: center;
     text-align: center;
+    font-size: 0;
+  }
+
+  .side-inner {
+    width: 50%;
     font-size: 15px;
+    display: inline-block;
+    box-sizing: border-box;
   }
 
   .follower {

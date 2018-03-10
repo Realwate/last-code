@@ -2,8 +2,10 @@
 <div class="clearfix bg">
   <page-header></page-header>
   <div class="main">
-    <router-view>
+    <keep-alive include="TagManagement,Timeline">
+    <router-view :key="$route.fullPath">
     </router-view>
+    </keep-alive>
   </div>
 </div>
 </template>
