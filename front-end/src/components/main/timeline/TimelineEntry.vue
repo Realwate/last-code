@@ -3,7 +3,7 @@
     <li class="entry-list-item" v-for="question in questions" :key="question.id">
       <div class="meta">
         <span v-text="question.creator.name"></span> &nbsp;
-        <span v-text="$util.formatDate(question.createdAt)"></span>提问
+        <span>{{question.createdAt | formatDate}}</span>提问
       </div>
       <div class="clearfix">
         <div class="vote fl">
@@ -13,7 +13,7 @@
         <div class="info">
           <div class="title-box">
             <h1 class="title" @click="toQuestionDetail(question.id)"
-                v-html="keywords?$util.highlightText(question.title,keywords):question.title">
+                v-html="$options.filters.highlightText(question.title,keywords)">
 
             </h1>
             <tag-inline-list :tags="question.tags"></tag-inline-list>

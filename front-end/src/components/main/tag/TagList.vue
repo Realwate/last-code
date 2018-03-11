@@ -4,7 +4,7 @@
       <div class="tag-box">
         <div class="desc">
           <router-link :to="{path:`tag/${tag.id}`}">
-            <img class="avatar-40" src="../../../assets/image/tag-default.png" >
+            <img class="avatar-40" :src="$options.filters.formatTagUrl(tag.iconUrl)" >
             <h3 class="tag-name" v-text="tag.name"></h3>
           </router-link>
         </div>

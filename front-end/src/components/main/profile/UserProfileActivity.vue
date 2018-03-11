@@ -31,8 +31,8 @@
 
             <ul>
               <li class="user-item" v-for="(followingUser,index) in following.users">
-                <img class="avatar-60"
-                     src="https://sfault-avatar.b0.upaiyun.com/364/787/3647877757-58c236fe63c80_huge256" alt="">
+                <img class="avatar-60" :alt="followingUser.name"
+                     :src="$options.filters.formatAvatarUrl(followingUser.avatarUrl)" >
                 <div class="info-box flex1">
                   <user-link :user="followingUser"></user-link>
                   <div class="following-info">
@@ -97,6 +97,11 @@
     },
     created() {
       this.togglePanel();
+    },
+    watch:{
+      viewingUserId(){ // 浏览的用户变化 更新activity
+        this.togglePanel();
+      }
     },
     components: {
       TimelineEntry,

@@ -21,6 +21,7 @@ Vue.config.errorHandler = function (err, vm, info) {
   console.error(err,vm,info);
 }
 
+import './filters'
 import router from './router'
 import store from './store'
 

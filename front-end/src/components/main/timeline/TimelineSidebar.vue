@@ -12,7 +12,8 @@
       <ul class="list vertical align-start">
         <li class="list-item" v-for="user in similarUsers">
           <router-link :to="{name: 'userProfile',params:{userId: user.id}}">
-            <img class="avatar-24" src="../../../assets/image/user-default.png" alt="">
+            <img class="avatar-24" :alt="user.name"
+                 :src="$options.filters.formatAvatarUrl(user.avatarUrl)">
             <span class="small-author">{{user.name}}</span>
           </router-link>
 

@@ -4,7 +4,20 @@
       <el-col :xs="20" :sm="16" :md="12">
         <el-form ref="user" :model="user" label-width="80px">
           <el-form-item label="头像">
-            <el-input v-model="user.name"></el-input>
+            <el-upload
+              :on-change="avatarChange"
+              ref="avatar"
+              :auto-upload="false"
+              :file-list="fileList"
+              :headers="headers"
+              class="avatar-uploader" accept="image/*"
+              :action="$config.uploadAvatarUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img class="avatar-60" :alt="user.name"
+                   :src="$options.filters.formatAvatarUrl(user.avatarUrl)">
+            </el-upload>
           </el-form-item>
           <el-form-item label="昵称">
             <el-input v-model="user.name"></el-input>
@@ -31,10 +44,12 @@
 </template>
 <script>
   import {mapGetters} from 'vuex'
+
   export default {
     data() {
       return {
         isLoading: false,
+        fileList:[],
         user: {},
         rules: {
           /*对应prop*/
@@ -47,20 +62,48 @@
         }
       }
     },
-    computed: mapGetters([
-      'loggedInUserId'
-    ]),
+    computed: {
+      ...mapGetters([
+        'loggedInUserId'
+      ]),
+      headers() {
+        return {
+          Authorization: 'Bearer ' + this.$store.state.token
+        };
+      }
+    },
     methods: {
+      avatarChange(file,fileList){
+        this.user.avatarUrl = URL.createObjectURL(file.raw);
+      },
+      handleAvatarSuccess({success, error, data}, file) {
+        if (!success) {
+          this.alertError(error.message);
+          return;
+        }
+//        this.user.avatarUrl = URL.createObjectURL(file.raw);
+        this.user.avatarUrl = data.avatarUrl;
+      },
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.alertError('上传头像图片大小不能超过 2MB!');
+        }
+        return isLt2M;
+      },
       save() {
         this.$refs.user.validate(async (valid) => {
           if (!valid) {
             return;
           }
-          await this.$api.updateUserProfile(this.loggedInUserId,this.user);
+          await this.$api.updateUserProfile(this.loggedInUserId, this.user);
+          if(this.fileList.length === 1){
+            await this.$refs.upload.submit();
+          }
           this.alertSuccess('更新成功！');
-          setTimeout(()=>{
-            this.$router.push({name:'userProfile',params:{userId:this.user.id}})
-          },800)
+          setTimeout(() => {
+            this.$router.push({name: 'userProfile', params: {userId: this.user.id}})
+          }, 800)
         });
       },
     },
@@ -68,7 +111,6 @@
       this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '个人资料'});
       this.user = await this.$api.getUserProfile(this.loggedInUserId);
     },
-    components: {}
   }
 </script>
 

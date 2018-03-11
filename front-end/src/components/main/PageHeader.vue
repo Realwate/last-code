@@ -77,7 +77,6 @@
         this.$store.dispatch('UserLogout');
       },
       search() {
-        console.log(this.keywords)
         this.$router.push({name:"questionSearch",query:{keywords:this.keywords}})
       },
       showNotification() {

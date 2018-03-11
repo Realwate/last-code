@@ -3,7 +3,7 @@
   <page-header></page-header>
   <div class="main">
     <keep-alive include="TagManagement,Timeline">
-    <router-view :key="$route.fullPath">
+    <router-view >
     </router-view>
     </keep-alive>
   </div>

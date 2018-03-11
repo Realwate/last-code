@@ -11,7 +11,7 @@
         <router-link class="author" :to="{name:'userProfile',params:{userId:question.creator.id}}"
                      v-text="question.creator.name"></router-link>
         <div class="date">
-          <span v-text="$util.formatDate(question.createdAt)"></span>提问
+          <span>{{question.createdAt | formatDate}}</span>提问
         </div>
         <div class="follower-box fr">
           <el-button class="follow-btn" @click="removeQuestionFollower" v-if="question.hasFollowed" type="primary"
@@ -39,13 +39,14 @@
           </div>
           <div class="answer-bottom">
             <div class="dib">
-              <img class="avatar-28" src="../../../assets/image/user-default.png" alt="">
+              <img class="avatar-28" :alt="answer.author.name"
+                   :src="$options.filters.formatAvatarUrl(answer.author.avatarUrl)">
               <router-link class="author" :to="{name:'userProfile',
                 params:{userId:answer.author.id}}" v-text="answer.author.name">
               </router-link>
             </div>
             <div class="date dib">
-              <span v-text="$util.formatDate(answer.createdAt)"></span>回答
+              <span>{{answer.createdAt | formatDate}}</span>回答
             </div>
           </div>
 

@@ -4,15 +4,16 @@
       <el-row type="flex" :gutter="20">
         <el-col :xs="8" :md="4">
           <div class="user-avatar mb10">
-            <img class="avatar-140" src="https://sfault-avatar.b0.upaiyun.com/364/787/3647877757-58c236fe63c80_huge256"
-                 alt="">
+            <img class="avatar-140" :alt="user.name"
+                 :src="$options.filters.formatAvatarUrl(user.avatarUrl)">
           </div>
         </el-col>
         <el-col :xs="16" :md="8">
           <h1 class="user-name" v-text="user.name"></h1>
           <div class="user-info mt10">
             <div class="user-com"> 工作地：<span v-text="user.company"></span></div>
-            <div class="user-site"> 个人主页： <a v-text="user.site" class="link" :href="user.site"></a></div>
+            <div class="user-site"> 个人主页：
+              <a target="_blank" v-text="user.site" class="link" :href="user.site"></a></div>
             <div class="action-button-group mt10">
               <div v-if="isSelf">
                 <el-button class="user-action-button" size="mini" plain @click="toUserEdit">编辑</el-button>
@@ -48,6 +49,7 @@
 <script>
   import UserFollowButton from './UserFollowButton'
   import UserProfileActivity from './UserProfileActivity'
+  import api from '@/api'
   import {mapGetters} from 'vuex'
 
   export default {
@@ -72,7 +74,7 @@
     props: ['userId'], // route
     methods: {
       followingCountChange(diffValue) {
-        if (!isSelf) {
+        if (!this.isSelf) {
           return;
         }
         this.user.follwoingCount += diffValue;
@@ -86,8 +88,20 @@
         if (panel) {
           this.panel = panel;
         }
-        this.user = await this.$api.getUserProfile(this.userId);
       },
+    },
+    async beforeRouteEnter(to, from, next) {
+//      console.log('enter')
+      // 先获取user
+      let user = await api.getUserProfile(to.params.userId);
+      next(vm => {
+        vm.user = user;
+      })
+    },
+    async beforeRouteUpdate(to, from, next) {
+      // 先获取user
+      this.user = await api.getUserProfile(to.params.userId);
+      next();
     },
     created() {
       this.init();
@@ -102,6 +116,7 @@
   .action-button-group {
     margin: 5px 0;
   }
+
   .user-desc {
     border-radius: 5px;
     padding: 20px;
