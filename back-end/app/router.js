@@ -49,6 +49,9 @@ module.exports = app => {
   router.get('/api/system', app.controller.system.getSystemInfo);
   router.get('/api/system/similarusers', app.controller.system.getSimilarUsers);
 
+  router.post('/api/upload/avatar', app.controller.system.uploadAvatar);
+  router.get('/image/avatar/:name', app.controller.system.getAvatar);
+
   // timeline
   router.get('/api/timeline/recommend', app.controller.timeline.getRecommendedItem);
   router.get('/api/timeline/recent', app.controller.timeline.getRecentItem);

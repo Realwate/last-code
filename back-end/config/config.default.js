@@ -6,6 +6,12 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1517665391204_9001';
 
   config.middleware = ['gzip', 'errorHandler', 'authorizationHandler', 'notfoundHandler',];
+
+  config.gzip = { // 针对API JSON的压缩
+    threshold: 1024, // 小于 1k 的响应体不压缩
+    match: '/api',
+  };
+
   config.errorHandler = {
     match: '/api',
   };
@@ -18,9 +24,6 @@ module.exports = appInfo => {
       const ignorePaths = ['/api/login', '/api/signup'];
       return ignorePaths.some(path => ctx.path.startsWith(path));
     },
-  };
-  config.gzip = { // 针对API JSON的压缩
-    threshold: 1024, // 小于 1k 的响应体不压缩
   };
   config.static = { // 静态资源插件 /public
     maxAge: 365 * 24 * 60 * 60,

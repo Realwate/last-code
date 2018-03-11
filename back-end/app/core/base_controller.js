@@ -16,6 +16,9 @@ class BaseController extends Controller {
   get body(){
     return this.ctx.request.body;
   }
+  getService(name){
+    return this.ctx.service[name];
+  }
   success(data) {
     JSONResult.wrap(null, data, this.ctx);
   }
