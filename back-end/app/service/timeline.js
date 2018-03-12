@@ -10,20 +10,24 @@ class TimelineService extends Service {
   async getHottestItem(userId) { // 热度
 
   }
-  async getRecentItem(userId) { // 最新的
+  async getRecentItem(userId, page) { // 最新的
     let followedTags = await this.getService('tag').getUserTag(userId);
-    let questionIds;
     if (followedTags == null || followedTags.length == 0) { // 没有关注tag
-      return this.getQuestionByIds();
+      return this.getService('question').getEntryQuestions(null, page);
     }
     let tagIds = followedTags.map((tag) => tag.id);
-    let sql = 'select distinct question_id from question_tag_relation where tag_id in' + this.constructWhere(tagIds)
-    questionIds = await this.rawQuery(sql);
-
-    return this.getQuestionByIds(questionIds.map((obj) => obj.question_id));
+    let sql = `select distinct question_id from question_tag_relation
+    where tag_id in ${this.constructWhere(tagIds)} limit ${page.limit} offset ${page.offset};`;
+    let questionIds = (await this.rawQuery(sql)).map((obj) => obj.question_id);
+    if (questionIds.length == 0) {
+      return [];
+    }
+    return this.getQuestionByIds(questionIds);
   }
-  async getRecommendedItem(userId) { // 推荐的
-    let questionIds = await this.recommender.getRecommendedItemsFromCache(userId, { count: 20 });
+  async getRecommendedItem(userId, page) { // 推荐的
+    // page[offset,limit) 转换 options [start,count)
+    let questionIds = await this.recommender
+      .getRecommendedItemsFromCache(userId, { start: page.offset, count: page.limit });
     if (questionIds == null) {
       return this.getRecentItem(userId);
     }

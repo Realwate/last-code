@@ -52,11 +52,11 @@ module.exports = appInfo => {
         let Sequelize = options.sequelize.constructor;
         Object.keys(attributes).forEach((key) => {
           if (typeof attributes[key] === "function") {
-            let type =  attributes[key]
+            let type = attributes[key]
             attributes[key] = {
-              type,field:decamelize(key)
+              type, field: decamelize(key)
             };
-          }else{
+          } else {
             attributes[key].field = decamelize(key);
           }
         });
@@ -87,6 +87,14 @@ module.exports = appInfo => {
   }
   config.logger = {
     consoleLevel: 'DEBUG',
+  }
+  config.system = {
+    api: {     // api默认分页
+      offset: 0,
+      limit: 10
+    },
+    maxAge: 1  // token 一天
+
   }
   return config;
 };

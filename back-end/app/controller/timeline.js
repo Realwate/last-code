@@ -3,22 +3,22 @@
 const Controller = require('../core/base_controller');
 
 class TimelineController extends Controller {
-  constructor(ctx){
+  constructor(ctx) {
     super(ctx);
   }
-  get serviceName(){
+  get serviceName() {
     return 'timeline';
   }
-  async getHottestItem(){
+  async getHottestItem() {
     let res = await this.service.getHottestItem(this.loggedInUserId);
     this.success(res);
   }
-  async getRecentItem(){
-    let res = await this.service.getRecentItem(this.loggedInUserId);
+  async getRecentItem() {
+    let res = await this.service.getRecentItem(this.loggedInUserId, this.page);
     this.success(res);
   }
-  async getRecommendedItem(){
-    let res = await this.service.getRecommendedItem(this.loggedInUserId);
+  async getRecommendedItem() {
+    let res = await this.service.getRecommendedItem(this.loggedInUserId, this.page);
     this.success(res);
   }
 }

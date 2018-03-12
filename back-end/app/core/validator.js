@@ -14,6 +14,9 @@ class Validator {
       if (isString(value) && value.trim() == '') {
         return msg;
       }
+      if (Array.isArray(value) && value.length === 0) {
+        return msg;
+      }
     }
   }
   match(msg, pattern) {

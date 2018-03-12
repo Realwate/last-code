@@ -6,8 +6,8 @@ class BusinessError extends Error {
   }
 }
 BusinessError.ERROR = {
-  RUNTIME:500,
-  DEFAULT: 1,
-  LOGIN: 403,
+  RUNTIME:600,  // 系统异常 Error等
+  DEFAULT: 500, // 一般的 BusinessError
+  LOGIN: 403, // 特殊的 BusinessError
 };
 module.exports = BusinessError;

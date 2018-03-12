@@ -11,12 +11,12 @@ class QuestionController extends Controller {
   }
   async queryQuestionByKeywords() {
     let keywords = this.ctx.query.keywords;
-    let res = await this.service.queryQuestionByKeywords(keywords);
+    let res = await this.service.queryQuestionByKeywords(keywords, this.page);
     this.success(res);
   }
   async show() {
     let questionId = this.ctx.params.questionId;
-    let res = await this.service.getQuestionDetail(questionId,this.loggedInUserId);
+    let res = await this.service.getQuestionDetail(questionId, this.loggedInUserId);
     this.success(res);
   }
   async create() {
@@ -25,35 +25,34 @@ class QuestionController extends Controller {
   }
   async addVote() {
     let questionId = this.ctx.params.questionId;
-    let res = await this.service.addVote(questionId,this.loggedInUserId,this.body);
+    let res = await this.service.addVote(questionId, this.loggedInUserId, this.body);
     this.success(res);
   }
   async deleteVote() {
     let questionId = this.ctx.params.questionId;
-    let res = await this.service.deleteVote(questionId,this.loggedInUserId,this.body);
+    let res = await this.service.deleteVote(questionId, this.loggedInUserId, this.body);
     this.success(res);
   }
   async getQuestionByUser() {
     let userId = this.ctx.params.userId;
-    let res = await this.service.getQuestionByUser(userId);
+    let res = await this.service.getQuestionByUser(userId, this.page);
     this.success(res);
   }
   async addFollower() {
     let questionId = this.ctx.params.questionId;
-    let followerId  = this.loggedInUserId;
-    let res = await this.service.addFollower(questionId,followerId)
+    let followerId = this.loggedInUserId;
+    let res = await this.service.addFollower(questionId, followerId)
     this.success();
   }
   async deleteFollower() {
     let questionId = this.ctx.params.questionId;
-    let followerId  = this.loggedInUserId;
-    let res = await this.service.deleteFollower(questionId,followerId)
+    let followerId = this.loggedInUserId;
+    let res = await this.service.deleteFollower(questionId, followerId)
     this.success();
   }
   async addViews() {
     let questionId = this.ctx.params.questionId;
-    let userId  = this.loggedInUserId;
-    let res = await this.service.addViews(userId,questionId)
+    let res = await this.service.addViews(this.loggedInUserId, questionId)
     this.success();
   }
 }

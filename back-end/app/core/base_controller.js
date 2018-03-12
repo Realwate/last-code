@@ -1,6 +1,5 @@
 const { Controller } = require('egg');
 const JSONResult = require('./json_result');
-const util = require('../util');
 
 class BaseController extends Controller {
   constructor(ctx) {
@@ -16,6 +15,12 @@ class BaseController extends Controller {
   get body(){
     return this.ctx.request.body;
   }
+  get page(){
+    return{
+      offset: this.ctx.query.offset || this.app.config.system.api.offset,
+      limit: this.ctx.query.limit || this.app.config.system.api.limit,
+    }
+  }
   getService(name){
     return this.ctx.service[name];
   }
@@ -26,7 +31,7 @@ class BaseController extends Controller {
     if (msg.join) {
       msg = msg.join('\n');
     }
-    util.throwError(msg);
+    this.app.util.throwError(msg);
   }
 }
 module.exports = BaseController;

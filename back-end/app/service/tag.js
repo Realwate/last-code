@@ -10,18 +10,10 @@ class TagService extends Service {
     return 'Tag'
   }
 
-  async getTagDetail(tagId,userId) {
+  async getTagDetail(tagId, userId) {
     let tag = await this.dao.findOne({
       where: { id: tagId },
       include: [
-        {
-          model: this.app.model.User,
-          attributes: [],
-          through: {
-            attributes: []
-          },
-          as: 'follower'
-        },
         {
           model: this.app.model.Question,
           as: 'questions',
@@ -32,13 +24,18 @@ class TagService extends Service {
         }
       ]
     });
-    let [res] = await this.rawQuery('select count(*) as num from user_follow_tag_relation where tag_id=? and user_id=?',tagId,userId);
+    if(tag == null){
+      return null;
+    }
+    let [res] = await this.rawQuery(
+      'select count(*) as num from user_follow_tag_relation where tag_id=? and user_id=?',
+      tagId, userId);
     let hasFollowed = res.num > 0;
-    return this.jsonModel(tag,{hasFollowed});
+    return this.jsonModel(tag, { hasFollowed });
   }
 
-  async getUserTag(userId) {
-     let tags = await this.dao.findAll({
+  async getUserTag(userId, page) {
+    let tags = await this.dao.findAll({
       include: [
         {
           model: this.app.model.User,
@@ -48,9 +45,9 @@ class TagService extends Service {
           },
           as: 'follower',
           where: { id: userId }
-        },]
-    }
-    );
+        },],
+      ...page
+    });
     tags = this.jsonModel(tags);
     return tags.map(tag => {
       tag.hasFollowed = true;
@@ -58,19 +55,21 @@ class TagService extends Service {
     });
   }
 
-  async getAllTag(userId) {
-    let allTags = await this.dao.findAll();
+  async getAllTag(userId, page) {
+    let allTags = await this.dao.findAll({
+      ...page,
+    });
 
     // hasFollowed followerCount itemCount
-    return this.addHasFollowed(allTags,userId);
+    return this.addHasFollowed(allTags, userId);
   }
-  async addHasFollowed(allTags,userId){
+  async addHasFollowed(allTags, userId) {
     allTags = this.jsonModel(allTags);
     let followingTags = await this.getUserTag(userId);
-    let mapTag = {};
-    followingTags.forEach((tag) => mapTag[tag.id] = true)
+    let followingTagsMap = {};
+    followingTags.forEach((tag) => followingTagsMap[tag.id] = true)
     allTags.forEach((tag) => {
-      if (mapTag[tag.id]) {
+      if (followingTagsMap[tag.id]) {
         tag.hasFollowed = true;
       } else {
         tag.hasFollowed = false;
@@ -110,39 +109,39 @@ class TagService extends Service {
     });
     return this.jsonModel(tags);
   }
-  async queryTagByKeywords(keywords,userId) {
+  async queryTagByKeywords(keywords, userId, page) {
     let tags = await this.dao.findAll({
+      ...page,
       where: {
         name: {
           [this.Op.like]: `%${keywords}%`
         }
       }
     });
-    return this.addHasFollowed(tags,userId);
+    return this.addHasFollowed(tags, userId);
   }
   async addFollower(tagId, followerId) {
     let tag = await this.findById(tagId);
     let follower = await this.getService('user').findById(followerId);
-    let res = await tag.hasFollower(follower);
-    if (res) {
-      this.throwError();
+    let hasFollowed = await tag.hasFollower(follower);
+    if (hasFollowed) {
+      return this.jsonModel(tag, { hasFollowed: true });
     }
-    await tag.addFollower(follower);
-    await tag.increment('follower_count', { by: 1 });
-    await tag.reload();
-    return this.jsonModel(tag, { hasFollowed: true });
+    tag.addFollower(follower);
+    tag.increment('follower_count', { by: 1 });
+    // tag.reload();
+    // return this.jsonModel(tag, { hasFollowed: true });
   }
   async deleteFollower(tagId, followerId) {
     let tag = await this.findById(tagId);
     let follower = await this.getService('user').findById(followerId);
-    let res = await tag.hasFollower(follower);
-    if (!res) {
-      this.throwError();
+    let hasFollowed = await tag.hasFollower(follower);
+    if (!hasFollowed) {
+      return this.jsonModel(tag, { hasFollowed: false });
     }
-    await tag.removeFollower(follower);
-    await tag.increment('follower_count', { by: -1 });
-    await tag.reload();
-    return this.jsonModel(tag, { hasFollowed: false });;
+    tag.removeFollower(follower);
+    tag.increment('follower_count', { by: -1 });
+    // return this.jsonModel(tag, { hasFollowed: false });;
   }
 }
 

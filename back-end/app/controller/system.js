@@ -50,9 +50,9 @@ class SystemController extends Controller {
       throw err;
     }
     let avatarUrl = `image/avatar/${fileName}`;
-    let user = await this.getService('user').findById(this.loggedInUserId);
-    await user.update({ avatarUrl }); // 更新头像
-    this.success({ avatarUrl })
+    // let user = await this.getService('user').findById(this.loggedInUserId);
+    // await user.update({ avatarUrl }); // 更新头像
+    this.success({ avatarUrl }) // 返回url
   }
 }
 

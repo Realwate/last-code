@@ -30,7 +30,7 @@ class UserService extends Service {
   }
   async nameCanUse(name, curUser) {
     const user = await this.findOneByFilter({ name });
-    return curUser.id == user.id || user == null;
+    return user == null || curUser.id == user.id;
   }
   async getUserProfile(userId, loggedInUserId) { // 用户主页
     let users = await this.getUserInfo([userId], loggedInUserId);
@@ -60,17 +60,24 @@ class UserService extends Service {
     }
     return users;
   }
-  async getFollowingUsers(viewingUserId,loggedInUserId) {
+  async getFollowingUsers(viewingUserId, loggedInUserId, page) {
     let user = await this.dao.findById(viewingUserId);
-    let followers = await user.getFollowingUsers();
+    if(user == null){
+      this.throwError('error user')
+    }
+    let followers = await user.getFollowingUsers({...page});
     let ids = followers.map((follower) => follower.id);
     return this.getUserInfo(ids, loggedInUserId);
   }
-  async getFollowingQuestions(userId) {
-    let followingQuestions = await this.rawQuery('select question_id from user_follow_question_relation where user_id=?', userId);
-    let followingQuestionIds = followingQuestions.map(question => question.question_id);
-    let questions = await this.getService('question').getQuestionByIds(followingQuestionIds);
-    return questions;
+  async getFollowingQuestions(viewingUserId, page) {
+    let user = await this.dao.findById(viewingUserId);
+    if(user == null){
+      this.throwError('error user')
+    }
+    let followingQuestions = await user.getFollowingQuestions({...page});
+
+    let followingQuestionIds = followingQuestions.map(question => question.id);
+    return this.getService('question').getQuestionByIds(followingQuestionIds);
   }
   async addFollower(userId, followerId) {
     let user = await this.findById(userId);

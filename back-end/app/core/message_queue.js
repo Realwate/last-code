@@ -10,10 +10,12 @@ class Queue {
   async getAll() {
     return this.redis.smembers(this.key);
   }
-  async popAll() {
-   return this.getAll(); // 测试用
-   let result = await this.redis.multi().smembers(this.key).del(this.key).exec();
-   return result[0][1]; // [[null,[]],[null,[]]]
+  async popAll(pop = true) {
+    if (pop) {
+      let result = await this.redis.multi().smembers(this.key).del(this.key).exec();
+      return result[0][1]; // [[null,[]],[null,[]]]
+    }
+    return this.getAll(); // 测试用
   }
   get key() {
     return `MessageQueue:${this.name}`;

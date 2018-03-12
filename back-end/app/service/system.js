@@ -16,19 +16,21 @@ class SystemService extends Service {
     }
   }
   async getSimilarUsers(userId) {
-    let userIds = await this.app.recommender.getSimilarUsersFromCache(userId,{count:3});
-    if(userIds == null){
+    let userIds = await this.app.recommender.getSimilarUsersFromCache(userId, { count: 4 });
+    if (userIds == null) {
       return null;
     }
     let users = await this.getDao('User').findAll({
-      where: { id:{[this.Op.in]: userIds }},
-      raw: true
+      where: { id: { [this.Op.in]: userIds } },
     });
-    return users
+    return this.jsonModel(users)
   }
-  async saveBehaviorData(userId, itemId, score) { // 保存用户行为数据
+
+  async saveBehaviorData(userId, itemId, score) {
     let recommender = this.app.recommender;
+    // 保存用户行为数据
     let res = await recommender.loadDataSet({ [userId]: { [itemId]: score } });
+    // 添加到队列 定时刷新
     this.app.Queue.get('refreshUsers').add(userId);
   }
 

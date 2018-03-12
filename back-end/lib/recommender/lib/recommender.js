@@ -4,10 +4,12 @@ const {findSimilarityAlgorithm} = require('./similarity')
 
 const defaultConfig = {
   recommend:{ // 推荐数量
+    start:0,
     count:10
   },
   similarity:{// 相似用户的数量
-    count:6
+    start:0,
+    count:4
   },
   similarityAlgorithm: 'pearson',
   dataAccesor: {

@@ -9,6 +9,30 @@ class AnswerService extends Service {
   get modelName() {
     return 'Answer'
   }
+  get createRule() {
+    return {
+      fields: ['content','user_id','question_id'],
+      rule: {
+        question_id: [
+          this.Validator.require('问题不能为空！'),
+          this.Validator.custom('找不到对应问题！', async (questionId, data) => {
+            let q = this.getService('question').findById(questionId)
+            return q != null;
+          }),
+        ],
+      }
+    }
+  }
+  async create(userId, answer) {
+    let user = await this.validateUser(userId);
+    this.merge(answer, { user_id: userId });
+    answer = await super.create(answer);
+    user.increment('answer_count', { by: 1 });
+
+    // 更新 矩阵
+    this.getService('system').saveBehaviorData(userId, answer.question_id, this.app.config.behavior.answer);
+    return this.jsonModel(answer, { author: user });
+  }
   async addVote(answerId, userId, { main }) { // 参照model, model
     let user = await this.getService('user').findById(userId);
     let answer = await this.findById(answerId);
@@ -25,38 +49,26 @@ class AnswerService extends Service {
   }
   async deleteVote(answerId, userId) {
     let answer = await this.findById(answerId);
-    let res = await this.rawQuery('delete from answer_vote where user_id = ? and answer_id = ', userId, answerId);
+    let res = await this.rawQuery(
+      'delete from answer_vote where user_id = ? and answer_id = ',
+      userId, answerId);
     if (res) {
       answer.increment('vote_count', { by: -1 });
     }
     return res;
   }
-  async create(userId, answer) {
-    let p1 = this.getService('user').findById(userId);
-    let p2 = this.getService('question').findById(answer.question_id);
-    let [user, question] = await Promise.all([p1, p2]);
-    if (question == null) {
-      this.throwError('找不到对应问题！');
-    }
-    this.merge(answer, { user_id: userId });
-    answer = await this.dao.create(answer);
-    user.increment('answer_count', { by: 1 });
-
-    // 更新 矩阵
-    this.getService('system').saveBehaviorData(userId, question.id, this.app.config.behavior.answer);
-    return  this.jsonModel(answer,{author:user}) ;
-  }
-  async getAnswerByUser(userId) {
+  async getAnswerByUser(userId,page) {
     let answers = await this.dao.findAll({
+      ...page,
       where: {
         user_id: userId
       },
-      include:[{
-        model:this.ctx.model.Question,
+      include: [{
+        model: this.ctx.model.Question,
         as: 'question'
       }]
     });
-    let answerQuestionIds = answers.map(answer=>answer.question.id);
+    let answerQuestionIds = answers.map(answer => answer.question.id);
     let answerQuestions = await this.getService('question').getQuestionByIds(answerQuestionIds);
     return answerQuestions;
   }

@@ -35,7 +35,7 @@ class RedisDataAccessor {
           oldVector[vectorKey] = undefined;
           continue;
         }
-        if(oldVector[vectorKey] == null){
+        if (oldVector[vectorKey] == null) {
           oldVector[vectorKey] = 0;
         }
         oldVector[vectorKey] += newVector[vectorKey];
@@ -65,27 +65,30 @@ class RedisDataAccessor {
       .then(() => this.redis.zaddAsync(similarityZSet(userId), result))
   }
   async getSimilarUsers(userId, options) { // 返回最相似的count个user
-    let args = options.includeScore ? 'WITHSCORES' : null; // 返回分数
+    let args = options.includeScore ? 'WITHSCORES' : undefined; // 返回分数
     let all = await this.redis.zcardAsync(similarityZSet(userId))
-    if (all == 0) {
+    if (all == 0 || options.start >= all) {
       return null;
     }
-    let realCount = Math.min(all, options.count) - 1;
-    if (args) {
-      return this.redis.zrevrangeAsync(similarityZSet(userId), 0, realCount, args);
-    }
-    return this.redis.zrevrangeAsync(similarityZSet(userId), 0, realCount); // // 闭区间
+    let stop = options.start + options.count;
+    let realStop = Math.min(all, stop) - 1; // 避免 out of range
 
+    if(args){
+      return this.redis.zrevrangeAsync(similarityZSet(userId), options.start, realStop,args);
+    }
+    // []闭区间 从0开始
+    return this.redis.zrevrangeAsync(similarityZSet(userId), options.start, realStop);
   }
 
   async getRecommendedItems(userId, options) {
     let all = await this.redis.zcardAsync(recommendedZSet(userId))
-    if (all == 0) {
+    if (all == 0 || options.start >= all) {
       return null;
     }
-    let realCount = Math.min(all, options.count) - 1;
+    let stop = options.start + options.count;
+    let realStop = Math.min(all, stop) - 1; // 避免 out of range
 
-    return client.zrevrangeAsync(recommendedZSet(userId), 0, realCount) // 闭区间
+    return client.zrevrangeAsync(recommendedZSet(userId), options.start, stop) // 闭区间
   }
   async getUserVecotr(userId) { // 得到对应user的多维向量
     if (util.isArray(userId)) {

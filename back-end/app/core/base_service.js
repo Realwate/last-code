@@ -1,5 +1,4 @@
 
-const util = require('../util');
 const Service = require('egg').Service;
 const Validator = require('./validator');
 
@@ -70,7 +69,7 @@ class BaseService extends Service {
     if (msg.join) {
       msg = msg.join('\n');
     }
-    util.throwError(msg);
+    this.app.util.throwError(msg);
   }
   async parallel(...multiPromise) {
     return Promise.all(multiPromise);
@@ -82,14 +81,14 @@ class BaseService extends Service {
   async destroy(id) {
     const model = await this.dao.findById(id);
     if (model == null) {
-      this.throwError('error parameter!')
+      this.throwError()
     }
     return model.destroy();
   }
   async update(id, obj) {
     const model = await this.dao.findById(id);
     if (model == null) {
-      this.throwError('error parameter!')
+      this.throwError()
     }
     obj = await this.updateValidate(obj);
     return model.update(obj);
@@ -100,15 +99,21 @@ class BaseService extends Service {
   }
   async findOneByFilter(where = {}) {
     const config = { where };
-    return this.dao.findOne(config, );
+    return this.dao.findOne(config);
   }
   async findAllByFilter(where = {}) {
-    const Op = this.ctx.app.Sequelize.Op;
     const config = { order: [['updated_at', 'DESC']], where };
     return this.dao.findAll(config);
   }
-  async count() {
+  async count(){
     return this.dao.count();
+  }
+  async validateUser(userId){
+    let user = await this.getService('user').findById(userId);
+    if(user == null){
+      this.throwError('用户不存在！')
+    }
+    return user;
   }
   jsonModel(model, extend = {}) {
     if (Array.isArray(model)) {
