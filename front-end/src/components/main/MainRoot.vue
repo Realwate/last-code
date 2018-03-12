@@ -1,28 +1,33 @@
 <template>
-<div class="clearfix bg">
-  <page-header></page-header>
-  <div class="main">
-    <keep-alive include="TagManagement,Timeline">
-    <router-view >
-    </router-view>
-    </keep-alive>
+  <div class="clearfix bg">
+    <page-header></page-header>
+    <div class="main">
+      <keep-alive include="TagManagement,Timeline">
+        <router-view>
+        </router-view>
+      </keep-alive>
+    </div>
   </div>
-</div>
 </template>
 <script>
-import PageHeader from './PageHeader'
+  import store from '@/store'
+  import PageHeader from './PageHeader'
+
   export default {
-    data(){
-      return {
-      }
+    data() {
+      return {}
     },
-    components:{
+    async beforeRouteEnter(to, from, next) {
+      await store.dispatch('GetLoggedInUser');
+      next();
+    },
+    components: {
       PageHeader
     }
   }
 </script>
 <style>
-  .bg{
+  .bg {
     background-color: #f9f9f9;
   }
 </style>

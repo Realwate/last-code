@@ -1,68 +1,74 @@
 <template>
   <div class="container main-panel pd20">
-    <div class="question-header bb1">
-      <div class="clearfix mb10">
-        <span class="question-icon">问</span>
-        <h1 class="lg-font" v-text="question.title"></h1>
-      </div>
-
-      <div class="info">
-        <tag-inline-list :tags="question.tags"></tag-inline-list>
-        <router-link class="author" :to="{name:'userProfile',params:{userId:question.creator.id}}"
-                     v-text="question.creator.name"></router-link>
-        <div class="date">
-          <span>{{question.createdAt | formatDate}}</span>提问
-        </div>
-        <div class="follower-box fr">
-          <el-button class="follow-btn" @click="removeQuestionFollower" v-if="question.hasFollowed" type="primary"
-                     size="mini">已关注
-          </el-button>
-          <el-button class="follow-btn" @click="addQuestionFollower" v-else plain size="mini">关注</el-button>
-          <span> <strong v-text="question.followerCount">5</strong> 关注 </span>
-        </div>
-      </div>
+    <div v-if="question == null">
+      <h2>问题不见了。。。</h2>
     </div>
-    <div class="question-detail section-block">
-      <vote :voteCount="question.voteCount"></vote>
-      <div class="content-wrapper" v-html="question.content"></div>
-    </div>
-    <div class="answer-area">
-      <h4 class="area-title">
-        <span v-text="question.answers.length"></span> 个回答
-      </h4>
+    <div v-else>
+      <div class="question-header bb1">
+        <div class="clearfix mb10">
+          <span class="question-icon">问</span>
+          <h1 class="lg-font" v-text="question.title"></h1>
+        </div>
 
-      <ul v-if="question.answers.length > 0">
-        <li class="section-block" v-for="answer in question.answers">
-          <vote :voteCount="answer.voteCount"></vote>
-          <div class="content-wrapper">
-            <div v-html="answer.content"></div>
+        <div class="info">
+          <tag-inline-list :tags="question.tags"></tag-inline-list>
+          <router-link class="author" :to="{name:'userProfile',params:{userId:question.creator.id}}"
+                       v-text="question.creator.name"></router-link>
+          <div class="date">
+            <span>{{question.createdAt | formatDate}}</span>提问
           </div>
-          <div class="answer-bottom">
-            <div class="dib">
-              <img class="avatar-28" :alt="answer.author.name"
-                   :src="$options.filters.formatAvatarUrl(answer.author.avatarUrl)">
-              <router-link class="author" :to="{name:'userProfile',
+          <div class="follower-box fr">
+            <el-button class="follow-btn" @click="removeQuestionFollower" v-if="question.hasFollowed" type="primary"
+                       size="mini">已关注
+            </el-button>
+            <el-button class="follow-btn" @click="addQuestionFollower" v-else plain size="mini">关注</el-button>
+            <span> <strong v-text="question.followerCount">5</strong> 关注 </span>
+          </div>
+        </div>
+      </div>
+      <div class="question-detail section-block">
+        <vote :voteCount="question.voteCount"></vote>
+        <div class="content-wrapper" v-html="question.content"></div>
+      </div>
+      <div class="answer-area">
+        <h4 class="area-title">
+          <span v-text="question.answers.length"></span> 个回答
+        </h4>
+
+        <ul v-if="question.answers.length > 0">
+          <li class="section-block" v-for="answer in question.answers">
+            <vote :voteCount="answer.voteCount"></vote>
+            <div class="content-wrapper">
+              <div v-html="answer.content"></div>
+            </div>
+            <div class="answer-bottom">
+              <div class="dib">
+                <img class="avatar-28" :alt="answer.author.name"
+                     :src="$options.filters.formatAvatarUrl(answer.author.avatarUrl)">
+                <router-link class="author" :to="{name:'userProfile',
                 params:{userId:answer.author.id}}" v-text="answer.author.name">
-              </router-link>
+                </router-link>
+              </div>
+              <div class="date dib">
+                <span>{{answer.createdAt | formatDate}}</span>回答
+              </div>
             </div>
-            <div class="date dib">
-              <span>{{answer.createdAt | formatDate}}</span>回答
-            </div>
-          </div>
 
-        </li>
-      </ul>
-    </div>
-    <div class="mt10">
-      <div v-if="hasAnswered">
-        <h4 class="area-title">这个问题你已经提交过回答了~</h4>
+          </li>
+        </ul>
       </div>
-      <div v-else>
-        <h4 class="area-title">撰写答案</h4>
-        <answer-editor v-model="answerContent"></answer-editor>
-        <el-button class="mt10" size="medium" type="primary" @click="commitAnswer">提交回答</el-button>
+      <div class="mt10">
+        <div v-if="hasAnswered">
+          <h4 class="area-title">这个问题你已经提交过回答了~</h4>
+        </div>
+        <div v-else>
+          <h4 class="area-title">撰写答案</h4>
+          <answer-editor v-model="answerContent"></answer-editor>
+          <el-button class="mt10" size="medium" type="primary" @click="commitAnswer">提交回答</el-button>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 <script>

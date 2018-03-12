@@ -11,6 +11,9 @@ export default {
     state.token = token;
     setAxiosToken(token);
   },
+  USER_CHANGE(state,loggedInUser){
+    state.loggedInUser = loggedInUser;
+  },
   NAV_HEADER_CHANGE(state,data){
     state.navHeader = Object.assign({},state.navHeader,data)
   }

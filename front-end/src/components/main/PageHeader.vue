@@ -10,7 +10,8 @@
             <ul class="nav-list">
               <li class="flex1"></li>
               <li class="nav-item search" :class="{'is-focus':searchFocus}">
-                <el-input @keyup.enter.native="search" @blur="searchFocus=false" @focus="searchFocus=true" v-model="keywords" size="small" placeholder="搜索">
+                <el-input @keyup.enter.native="search" @blur="searchFocus=false" @focus="searchFocus=true"
+                          v-model="keywords" size="small" placeholder="搜索">
                   <i slot="suffix" class="el-icon-search" @click="search"></i>
                 </el-input>
               </li>
@@ -24,7 +25,9 @@
               </li>
               <li class="nav-item menu">
                 <el-dropdown trigger="click">
-                  <span class="el-dropdown-link"><i class='nav-icon fa fa-user-circle'></i>  </span>
+                  <img :src="$options.filters.formatAvatarUrl(loggedInUser.avatarUrl)"
+                       class="el-dropdown-link avatar-40" alt="">
+                  <!--<span ><i class='nav-icon fa fa-user-circle'></i>  </span>-->
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native="toUserProfile">我的主页</el-dropdown-item>
                     <el-dropdown-item @click.native="toTag">标签管理</el-dropdown-item>
@@ -44,21 +47,24 @@
   </transition>
 </template>
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapState} from 'vuex'
   import NavHeader from './NavHeader'
 
   export default {
     data() {
       return {
-        searchFocus:false,
+        searchFocus: false,
         keywords: "",
         notificationCount: 99,
         showPageHeader: true,
       }
     },
-    computed: mapGetters([
-      'loggedInUserId',
-    ]),
+    computed: {
+      ...mapGetters([
+        'loggedInUserId',
+      ]),
+      ...mapState(['loggedInUser'])
+    },
     methods: {
       toUserProfile() {
         this.$router.push({name: 'userProfile', params: {userId: this.loggedInUserId}})
@@ -77,7 +83,7 @@
         this.$store.dispatch('UserLogout');
       },
       search() {
-        this.$router.push({name:"questionSearch",query:{keywords:this.keywords}})
+        this.$router.push({name: "questionSearch", query: {keywords: this.keywords}})
       },
       showNotification() {
       },
@@ -109,7 +115,6 @@
 
       },
     },
-
     mounted() {
       let headerHeight = this.$refs.mainHeader.offsetHeight;
       let fn = (e) => {
@@ -119,7 +124,7 @@
       this.scrollFn = this.throttleFn(fn)
       window.addEventListener('scroll', this.scrollFn);
     },
-    destroyed(){
+    destroyed() {
       window.removeEventListener('scroll', this.scrollFn);
     },
     components: {
@@ -135,6 +140,9 @@
     left: 0;
     right: 0;
     z-index: 100;
+  }
+  .notification{
+    margin-right: 15px;
   }
   .fade-enter-active, .fade-leave-active {
     transition: all .1s ease-in;
@@ -164,10 +172,11 @@
 
   .search {
     flex: 0 0 25%;
-    transition:all 0.1s ease-in;
+    transition: all 0.1s ease-in;
   }
-  .search.is-focus{
-    flex:0 0 40%;
+
+  .search.is-focus {
+    flex: 0 0 40%;
   }
 
   .notification {

@@ -1,7 +1,7 @@
-
 function getCookie(sKey) {
   return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
 }
+
 function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
   if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
     return false;
@@ -24,6 +24,12 @@ function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
   return true;
 }
 
+function sleep(t = 800) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, t)
+  })
+}
+
 export default {
-  getCookie,setCookie
+  getCookie, setCookie,sleep
 }

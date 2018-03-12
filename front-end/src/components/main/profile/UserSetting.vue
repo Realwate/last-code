@@ -5,9 +5,8 @@
         <el-form ref="user" :model="user" label-width="80px">
           <el-form-item label="头像">
             <el-upload
-              :on-change="avatarChange"
               ref="avatar"
-              :auto-upload="false"
+              :auto-upload="true"
               :file-list="fileList"
               :headers="headers"
               class="avatar-uploader" accept="image/*"
@@ -74,14 +73,13 @@
     },
     methods: {
       avatarChange(file,fileList){
-        this.user.avatarUrl = URL.createObjectURL(file.raw);
+//        this.user.avatarUrl = URL.createObjectURL(file.raw);
       },
       handleAvatarSuccess({success, error, data}, file) {
         if (!success) {
           this.alertError(error.message);
           return;
         }
-//        this.user.avatarUrl = URL.createObjectURL(file.raw);
         this.user.avatarUrl = data.avatarUrl;
       },
       beforeAvatarUpload(file) {
@@ -97,13 +95,10 @@
             return;
           }
           await this.$api.updateUserProfile(this.loggedInUserId, this.user);
-          if(this.fileList.length === 1){
-            await this.$refs.upload.submit();
-          }
           this.alertSuccess('更新成功！');
-          setTimeout(() => {
-            this.$router.push({name: 'userProfile', params: {userId: this.user.id}})
-          }, 800)
+          this.$store.dispatch('GetLoggedInUser');
+          await this.$util.sleep();
+          this.$router.push({name: 'userProfile', params: {userId: this.user.id}})
         });
       },
     },

@@ -23,15 +23,15 @@ export default {
   },
   async ChangeNavHeader({commit, state,getters }, data) {
     let {version, valid} = getVersion('navHeader');
-    // 一样不更新
-    if (data == null && state.navHeader.type === null) {
-      return;
-    }
     if (data == null) {
       let tags = await api.getTagByUser(getters.loggedInUserId);
       valid(version) && commit('NAV_HEADER_CHANGE', {type: null, tags});
       return;
     }
     valid(version) && commit('NAV_HEADER_CHANGE', data);
+  },
+  async GetLoggedInUser({commit, state,getters }, data) {
+    let loggedInUser = await api.getUserProfile(getters.loggedInUserId);
+    commit('USER_CHANGE', loggedInUser);
   }
 }

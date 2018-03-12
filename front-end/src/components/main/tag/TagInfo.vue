@@ -24,11 +24,19 @@
     },
     methods: {
       async followTag() {
-        let newTag = await this.$api.tagAddFollower(this.tag.id);
+        await this.$api.tagAddFollower(this.tag.id);
+        let newTag = Object.assign({}, this.tag, {
+          hasFollowed: true,
+          followerCount: this.tag.followerCount + 1
+        });
         this.changeTag(newTag);
       },
       async cancelFollowTag() {
-        let newTag = await this.$api.tagRemoveFollower(this.tag.id);
+        await this.$api.tagRemoveFollower(this.tag.id);
+        let newTag = Object.assign({}, this.tag, {
+          hasFollowed: false,
+          followerCount: this.tag.followerCount - 1
+        });
         this.changeTag(newTag);
       },
       changeTag(newTag) {

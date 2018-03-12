@@ -11,7 +11,8 @@
 
 
         <el-form-item prop="password" label="密码">
-          <el-input type="password" v-model="user.password" auto-complete="off" placeholder="密码"></el-input>
+          <el-input type="password" v-model="user.password" auto-complete="off"
+                    @keyup.enter.native="handleSubmit" placeholder="密码"></el-input>
         </el-form-item>
 
         <el-form-item>

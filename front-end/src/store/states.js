@@ -1,6 +1,7 @@
 
 let state = {
   token:null,
+  loggedInUser:{},
   navHeader:{}
 };
 

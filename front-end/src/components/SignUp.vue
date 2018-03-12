@@ -49,24 +49,18 @@
               return;
             }
             this.isLoading = true;
-
             this.$api.signup(this.user)
-              .then(({success, error}) => {//返回对象中的data为真实返回结果
-                if (!success) {
-                  //登录失败
-                  this.alertError(error.message)
-                  this.isLoading = false;
-                  return;
-                }
-                this.alertSuccess('注册成功！')
-                setTimeout(()=>{
-                  this.$router.push({name: 'login'});
-                },1500);
-              })
-              .catch((e) => {   //登录失败
-                this.alertError(e.message)
+              .then(async (data) => {
                 this.isLoading = false;
-              })  //api login end
+                this.alertSuccess('注册成功！')
+                // 存储token到vuex
+                this.$store.dispatch('UserLogin', data);
+                await this.$util.sleep();
+                this.$router.push({path: '/'});
+              })
+              .catch((e) => {
+                this.isLoading = false;
+              })
           }
         )
         ;
@@ -78,6 +72,7 @@
 
 <style scoped lang="scss">
   @import "../assets/scss/var";
+
   .title {
     text-align: center;
     margin-bottom: 20px;

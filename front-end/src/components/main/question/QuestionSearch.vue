@@ -19,13 +19,23 @@
       }
     },
     props: ['keywords'],
-    async created() {
-      if(this.keywords == null || this.keywords.trim() === ""){
-        return;
+    methods: {
+      async search() {
+        if (this.keywords == null || this.keywords.trim() === "") {
+          return;
+        }
+        this.questions = await this.$api.searchQuestion(this.keywords);
+        this.$store.dispatch('ChangeNavHeader',
+          {type: 'title', title: `关键字：${this.keywords}`});
       }
-      this.questions = await this.$api.searchQuestion(this.keywords);
-      this.$store.dispatch('ChangeNavHeader',
-        {type: 'title', title: `关键字：${this.keywords}`});
+    },
+    watch: {
+      keywords() {
+        this.search();
+      }
+    },
+    created() {
+      this.search();
     },
     components: {
       TimelineEntry

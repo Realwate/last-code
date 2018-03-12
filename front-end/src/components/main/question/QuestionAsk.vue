@@ -73,9 +73,8 @@
       async save() {
         let res = await this.$api.saveQuestion(this.question);
         this.alertSuccess('发布成功!');
-        setTimeout(()=>{
-          this.$router.push({name:'questionDetail',params:{questionId:res.id}})
-        },1000)
+        await this.$util.sleep();
+        this.$router.push({name:'questionDetail',params:{questionId:res.id}})
       },
     },
     async created() {
