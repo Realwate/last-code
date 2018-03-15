@@ -1,6 +1,5 @@
 <template>
-  <transition name="el-zoom-in-top">
-    <header v-show="showPageHeader" class="page-header shadow">
+    <header v-bind="$props" class="page-header shadow">
       <div ref="mainHeader" class="main-header">
         <div class="flex-container">
           <router-link class='logo' :to="{name:'timeline'}">
@@ -44,7 +43,6 @@
       <nav-header>
       </nav-header>
     </header>
-  </transition>
 </template>
 <script>
   import {mapGetters, mapState} from 'vuex'
@@ -55,8 +53,7 @@
       return {
         searchFocus: false,
         keywords: "",
-        notificationCount: 99,
-        showPageHeader: true,
+        notificationCount: 99
       }
     },
     computed: {
@@ -87,45 +84,8 @@
       },
       showNotification() {
       },
-      debounceFn(fn, t = 100) {
-        let id = null;
-        let executeFn = (args) => {
-          id = setTimeout(fn.bind(this, ...args), t);
-        }
-        return (...args) => {
-          if (id === null) {
-            executeFn(args);
-          } else {
-            clearTimeout(id);
-            executeFn(args);
-          }
-        }
-
-      },
-      throttleFn(fn, t = 200) {
-        let id = null;
-        return (...args) => {
-          if (id === null) {
-            id = setTimeout(() => {
-              fn.call(this, ...args);
-              id = null;
-            }, t)
-          }
-        }
-
-      },
-    },
-    mounted() {
-      let headerHeight = this.$refs.mainHeader.offsetHeight;
-      let fn = (e) => {
-        let scrollTop = window.pageYOffset;
-        this.showPageHeader = scrollTop < headerHeight;
-      };
-      this.scrollFn = this.throttleFn(fn)
-      window.addEventListener('scroll', this.scrollFn);
-    },
-    destroyed() {
-      window.removeEventListener('scroll', this.scrollFn);
+      created(){
+      }
     },
     components: {
       NavHeader
@@ -135,26 +95,17 @@
 </script>
 <style scoped>
   .page-header {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 2001;
   }
   .notification{
     margin-right: 15px;
   }
-  .fade-enter-active, .fade-leave-active {
-    transition: all .1s ease-in;
-  }
-
-  .fade-enter, .fade-leave-to {
-    /*opacity: 0;*/
-    transform: translate(0, -100%);
-  }
-
   .main-header {
-    height: 65px;
+    height: 60px;
     background: #fff;
     border-bottom: 1px solid #dfdfdf;
   }

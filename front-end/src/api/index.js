@@ -44,8 +44,8 @@ function resolveResult(res) {
     .then(({success, error, data}) => {
       if (!success) { // 统一错误处理
         Msg.alertError(error.message)
-        if(error.code === 403){
-          router.push({name:'login'})
+        if (error.code === 403) {
+          router.push({name: 'login'})
           return
         }
         console.error(error);
@@ -63,10 +63,21 @@ function setAxiosToken(token) {
   //发送需要认证的请求 带上token 后台会校验
   authAxios.defaults.headers.common['Authorization'] = "Bearer " + token;
 }
+
 setAxiosToken(store.state.token);
 
 export {
   setAxiosToken
+}
+
+function addQueryString(params = {}) {
+  let str = Object.entries(params)
+    .map((entry) => entry.join('='))
+    .join('&')
+  if (str) {
+    return '?' + str;
+  }
+  return '';
 }
 
 export default {
@@ -79,8 +90,8 @@ export default {
   signup(data) {
     return postApi('/api/signup', data)
   },
-  timeline(type) { // recommend recent hot
-    return getApi(`/api/timeline/${type}`);
+  timeline(type, params) { // recommend recent hot
+    return getApi(`/api/timeline/${type}${addQueryString(params)}`);
   },
   getSystemInfo() {
     return getApi(`/api/system`);
@@ -91,11 +102,11 @@ export default {
   getSimilarUsers() {
     return getApi(`/api/system/similarusers`);
   },
-  getTagByUser(userId) {
-    return getApi(`/api/user/${userId}/following-tags`);
+  getTagByUser(userId, params) {
+    return getApi(`/api/user/${userId}/following-tags${addQueryString(params)}`);
   },
-  getAllTag() {
-    return getApi(`/api/tag`);
+  getAllTag(params) {
+    return getApi(`/api/tag${addQueryString(params)}`);
   },
   tagAddFollower(tagId) {
     return postApi(`/api/tag/${tagId}/follower`);
@@ -115,14 +126,20 @@ export default {
   updateUserProfile(userId, user) {
     return postApi(`/api/user/${userId}`, user, 'patch');
   },
-  getUserQuestion(userId) {
-    return getApi(`/api/user/${userId}/question`);
+  getUserQuestion(userId,params) {
+    return getApi(`/api/user/${userId}/question${addQueryString(params)}`);
   },
-  getUserAnswer(userId) {
-    return getApi(`/api/user/${userId}/answer`);
+  getUserAnswer(userId,params) {
+    return getApi(`/api/user/${userId}/answer${addQueryString(params)}`);
   },
   getUserFollow(userId) {
     return getApi(`/api/user/${userId}/following`);
+  },
+  getFollowingUsers(userId,params) {
+    return getApi(`/api/user/${userId}/following-users${addQueryString(params)}`);
+  },
+  getFollowingQuestions(userId,params) {
+    return getApi(`/api/user/${userId}/following-questions${addQueryString(params)}`);
   },
   addUserFollower(userId) {
     return postApi(`/api/user/${userId}/follower`);
@@ -139,10 +156,15 @@ export default {
   addAnswer(params) {
     return postApi(`/api/answer`, params);
   },
-  searchQuestion(keywords) {
-    return getApi(`/api/question/query?keywords=${keywords}`);
+  searchQuestion(keywords,params) {
+    params = Object.assign({keywords},params)
+    return getApi(`/api/question/query${addQueryString(params)}`);
   },
-  searchTag(keywords) {
-    return getApi(`/api/tag/query?keywords=${keywords}`);
+  searchTag(keywords, params) {
+    params = Object.assign({keywords}, params)
+    return getApi(`/api/tag/query${addQueryString(params)}`);
+  },
+  addViews(questionId) {
+    return postApi(`/api/question/${questionId}/views`);
   },
 }

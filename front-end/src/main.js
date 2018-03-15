@@ -6,7 +6,6 @@ import App from './App';
 import 'element-ui/lib/theme-chalk/display.css';
 import 'font-awesome/css/font-awesome.min.css'
 import "nprogress/nprogress.css";
-
 // import 'element-ui/lib/theme-chalk/index.css'
 import './assets/scss/index.scss';
 import "./assets/scss/common.scss";

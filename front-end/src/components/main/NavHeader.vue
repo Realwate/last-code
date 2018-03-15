@@ -41,8 +41,8 @@
 </script>
 <style scoped>
   .nav-header {
-    padding: 7px 5px 5px;
-    height: 40px;
+    padding: 5px;
+    height: 35px;
     box-sizing: border-box;
     background: rgba(255,255,255,.9);
   }

@@ -16,23 +16,23 @@
         </timeline-entry>
       </el-tab-pane>
       <el-tab-pane label="关注" name="following">
-        <el-tabs type="card">
-          <el-tab-pane label="我关注的问题">
-            <div class="empty-text" v-if="following.questions == null || following.questions.length == 0">
+        <el-tabs type="card" v-model="followingPanel" @tab-click="togglePanel">
+          <el-tab-pane label="我关注的问题" name="followingQuestions">
+            <div class="empty-text" v-if="followingQuestions == null || followingQuestions.length == 0">
               还没有关注问题~
             </div>
-            <timeline-entry :questions="following.questions">
+            <timeline-entry :questions="followingQuestions">
             </timeline-entry>
           </el-tab-pane>
-          <el-tab-pane label="我关注的人">
-            <div class="empty-text" v-if="following.users == null || following.users.length == 0">
+          <el-tab-pane label="我关注的人" name="followingUsers">
+            <div class="empty-text" v-if="followingUsers == null || followingUsers.length == 0">
               还没有关注任何人~
             </div>
 
             <ul>
-              <li class="user-item" v-for="(followingUser,index) in following.users">
+              <li class="user-item" v-for="(followingUser,index) in followingUsers">
                 <img class="avatar-60" :alt="followingUser.name"
-                     :src="$options.filters.formatAvatarUrl(followingUser.avatarUrl)" >
+                     :src="$options.filters.formatAvatarUrl(followingUser.avatarUrl)">
                 <div class="info-box flex1">
                   <user-link :user="followingUser"></user-link>
                   <div class="following-info">
@@ -55,15 +55,19 @@
   import UserFollowButton from './UserFollowButton'
   import UserLink from './UserLink'
   import {mapGetters} from 'vuex'
+  import requestByPage from '@/mixins/requestByPage'
 
   export default {
     name: 'UserProfileActivity',
+    mixins: [requestByPage],
     data() {
       return {
         activePanel: this.panel || "questions",
+        followingPanel: 'followingQuestions',
         questions: [],
         answeredQuestions: [],
-        following: {}
+        followingUsers: [],
+        followingQuestions: []
       }
     },
     computed: {
@@ -77,15 +81,28 @@
     },
     methods: {
       async togglePanel() {
+        this.initRequestByPage({
+          datasetKey: this.getCurrentPanel,
+          request: this.request,
+        })
+      },
+      request(...args) {
+        let curPanel = this.getCurrentPanel();
+        return this.getActivityAPI(curPanel)(this.viewingUserId, ...args);
+      },
+      getCurrentPanel() {
         let curPanel = this.activePanel;
-        let api = this.getActivityAPI(curPanel);
-        this[curPanel] = await api(this.viewingUserId);
+        if (curPanel === 'following') {
+          curPanel = this.followingPanel;
+        }
+        return curPanel;
       },
       getActivityAPI(panel) {
         let map = {
           questions: 'getUserQuestion',
           answeredQuestions: 'getUserAnswer',
-          following: 'getUserFollow',
+          followingUsers: 'getFollowingUsers',
+          followingQuestions: 'getFollowingQuestions',
         }
         return this.$api[map[panel]];
       },
@@ -98,8 +115,8 @@
     created() {
       this.togglePanel();
     },
-    watch:{
-      viewingUserId(){ // 浏览的用户变化 更新activity
+    watch: {
+      viewingUserId() { // 浏览的用户变化 更新activity
         this.togglePanel();
       }
     },
@@ -117,7 +134,8 @@
     flex: 1;
     min-height: 50vh;
   }
-  .info-box{
+
+  .info-box {
     margin-left: 10px;
     align-items: flex-start;
     display: flex;
@@ -125,15 +143,17 @@
     justify-content: space-around;
     align-self: stretch;
   }
-  .following-info{
+
+  .following-info {
     color: #888;
   }
+
   .user-item {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    border-bottom:1px solid #ccc;
-    padding-bottom:10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
   }
 
 </style>

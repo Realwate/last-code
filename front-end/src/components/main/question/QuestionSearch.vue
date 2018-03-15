@@ -11,22 +11,32 @@
 <script>
   import TimelineEntry from '../timeline/TimelineEntry'
   import {mapGetters} from 'vuex'
-
+  import requestByPage from '@/mixins/requestByPage'
   export default {
     data() {
       return {
         questions: []
       }
     },
+    mixins: [requestByPage],
     props: ['keywords'],
     methods: {
+      request(...args){
+        return this.$api.searchQuestion(this.keywords,...args)
+      },
       async search() {
         if (this.keywords == null || this.keywords.trim() === "") {
           return;
         }
-        this.questions = await this.$api.searchQuestion(this.keywords);
-        this.$store.dispatch('ChangeNavHeader',
-          {type: 'title', title: `关键字：${this.keywords}`});
+        this.initRequestByPage({
+          datasetKey: 'questions',
+          request: this.request,
+          onload: () => {
+            this.$store.dispatch('ChangeNavHeader',
+              {type: 'title', title: `关键字：${this.keywords}`});
+          }
+        })
+
       }
     },
     watch: {

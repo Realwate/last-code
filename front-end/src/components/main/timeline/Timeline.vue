@@ -8,7 +8,9 @@
                 @click="getRecentItems">最新
             </li>
             <!--<li class="nav-item">热门</li>-->
-            <li class="nav-item" :class="{active:currentTab === 'recommend'}" @click="getRecommendedItems">推荐</li>
+            <li class="nav-item" :class="{active:currentTab === 'recommend'}"
+                @click="getRecommendedItems">推荐
+            </li>
           </ul>
         </nav>
       </header>
@@ -21,9 +23,11 @@
 <script>
   import TimelineEntry from './TimelineEntry'
   import TimelineSidebar from './TimelineSidebar'
+  import requestByPage from '@/mixins/requestByPage'
 
   export default {
-    name:'Timeline',
+    name: 'Timeline',
+    mixins: [requestByPage],
     data() {
       return {
         currentTab: "recent",
@@ -40,17 +44,28 @@
         this.currentTab = "recent";
         this.changeTab();
       },
+      request(...args) {
+        return this.$api.timeline(this.currentTab, ...args)
+      },
       async changeTab() {
-        this.loading = true;
-        this.questions = await this.$api.timeline(this.currentTab);
-        this.loading = false;
+        this.initRequestByPage({
+          datasetKey: 'questions',
+          request: this.request,
+          beforestart: () => {
+            this.loading = true;
+          },
+          onload: () => {
+            this.loading = false;
+          }
+        })
       }
     },
     created() {
-    },
-    activated(){
       this.$store.dispatch('ChangeNavHeader');
       this.changeTab();
+    },
+    destroyed() {
+      this.requestSub.unsubscribe();
     },
     components: {
       TimelineEntry, TimelineSidebar

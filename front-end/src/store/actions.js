@@ -1,6 +1,4 @@
 import router from '@/router'
-/*用于路由跳转*/
-
 import api from '@/api'
 
 let getVersion = (function () {

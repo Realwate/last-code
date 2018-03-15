@@ -16,13 +16,15 @@
   import TagList from './TagList'
   import NavHeader from '../NavHeader'
   import {mapGetters} from 'vuex'
+  import requestByPage from '@/mixins/requestByPage'
 
   export default {
     name: 'TagManagement',
+    mixins: [requestByPage],
     data() {
       return {
         activeName: "followed",
-        keywords:"",
+        keywords: "",
         tags: [],
       }
     },
@@ -32,30 +34,40 @@
       ]),
     },
     methods: {
-      async search(){
-        if(this.keywords.trim() === ""){
+      async search() {
+        if (this.keywords.trim() === "") {
           return;
         }
-        this.tags = await this.$api.searchTag(this.keywords);
+        this.initRequestByPage({
+          datasetKey: 'tags',
+          request: function (...args) {
+            return this.$api.searchTag(this.keywords, ...args)
+          },
+        })
+      },
+      request(...args) {
+        if (this.activeName === 'all') {
+          return this.$api.getAllTag(...args);
+        } else {
+          return this.$api.getTagByUser(this.loggedInUserId, ...args);
+        }
       },
       async toggleTag() {
-        let res;
-        if (this.activeName === 'all') {
-          res = await this.$api.getAllTag();
-        } else {
-          res = await this.$api.getTagByUser(this.loggedInUserId);
-        }
-        this.tags = res;
+        this.initRequestByPage({
+          datasetKey: 'tags',
+          request: this.request,
+        })
       },
     },
     created() {
+      this.toggleTag();
       this.$on('update:tag', ({tag, index}) => {
         this.$set(this.tags, index, tag)
       });
       this.$store.dispatch('ChangeNavHeader', {type: 'title', title: '标签管理'})
     },
-    activated(){
-      this.toggleTag();
+    activated() {
+
     },
     components: {
       TagList, NavHeader
@@ -63,11 +75,11 @@
   }
 </script>
 <style scoped>
-.search-input{
-  margin-left: 20px;
-  width: 200px;
-  margin-bottom: 20px;
-}
+  .search-input {
+    margin-left: 20px;
+    width: 200px;
+    margin-bottom: 20px;
+  }
 </style>
 
 
