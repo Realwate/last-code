@@ -24,7 +24,7 @@ class AnswerController extends Controller {
   }
   async getAnswerByUser() {
     let userId = this.ctx.params.userId;
-    let res = await this.service.getAnswerByUser(userId,this.page);
+    let res = await this.service.getAnswerByUser(userId, this.page);
     this.success(res);
   }
 }

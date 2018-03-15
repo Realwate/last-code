@@ -90,7 +90,6 @@ module.exports = appInfo => {
   }
   config.system = {
     api: {     // api默认分页
-      offset: 0,
       limit: 10
     },
     maxAge: 1  // token 一天

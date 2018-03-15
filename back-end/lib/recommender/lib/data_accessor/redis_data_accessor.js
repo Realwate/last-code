@@ -88,7 +88,7 @@ class RedisDataAccessor {
     let stop = options.start + options.count;
     let realStop = Math.min(all, stop) - 1; // 避免 out of range
 
-    return client.zrevrangeAsync(recommendedZSet(userId), options.start, stop) // 闭区间
+    return client.zrevrangeAsync(recommendedZSet(userId), options.start, realStop) // 闭区间
   }
   async getUserVecotr(userId) { // 得到对应user的多维向量
     if (util.isArray(userId)) {

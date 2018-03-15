@@ -1,30 +1,30 @@
 const createAccessor = require('./data_accessor')
 const util = require('./util')
-const {findSimilarityAlgorithm} = require('./similarity')
+const { findSimilarityAlgorithm } = require('./similarity')
 
 const defaultConfig = {
-  recommend:{ // 推荐数量
-    start:0,
-    count:10
+  recommend: { // 推荐数量
+    start: 0,
+    count: 10
   },
-  similarity:{// 相似用户的数量
-    start:0,
-    count:4
+  similarity: {// 默认取得的相似用户数量
+    start: 0,
+    count: 8
   },
   similarityAlgorithm: 'pearson',
   dataAccesor: {
-    redis:{
-      host:"localhost",
-      port:6379
+    redis: {
+      host: "localhost",
+      port: 6379
     }
   }
 }
 class Recommender {
   constructor(options) {
-    options = Object.assign({},defaultConfig,options);
+    options = Object.assign({}, defaultConfig, options);
     this.logger = {
-      log:()=>{
-        if(this.enableLog()){
+      log: () => {
+        if (this.enableLog()) {
           return console.log.bind(console);
         }
       }
@@ -34,32 +34,32 @@ class Recommender {
     this.dataAccessor = createAccessor(options.dataAccesor);
     this.calcSimilarity = findSimilarityAlgorithm(options.similarityAlgorithm);
   }
-  enableLog(){
+  enableLog() {
     return false;
   }
-  setLogger(logger){
+  setLogger(logger) {
     this.logger = logger;
     this.dataAccessor.setLogger(logger);
   }
   // 需要处理记录过多 刷新过多的情况 -- 记录时间
-  async refreshRecommendations(userId){ // 刷新
+  async refreshRecommendations(userId) { // 刷新
     await this.updateSimilarity(userId);
     await this.updateRecommendations(userId);
   }
   async updateRecommendations(userId) {
     let result = await Promise.all([
-      this.dataAccessor.getRecommendedItems(userId,{count:0}),// 已经推荐过的items 没有则返回null
-      this.getSimilarUsersFromCache(userId, {includeScore:true})
+      this.dataAccessor.getRecommendedItems(userId, { start: 0, count: 0 }),// 已经推荐过的items 没有则返回null
+      this.getSimilarUsersFromCache(userId, { includeScore: true })
     ]);
-    if(result[1] == null){ // 没有behavior 找不到相似用户
+    if (result[1] == null) { // 没有behavior 找不到相似用户
       return;
     }
     let curUserItemSet = new Set(result[0]); // 用于做差集 得到notRatedItems
     // let recommendtItemSet = new Set(); // 其他用户喜欢的item并集
 
     // result[1]格式[name1,score1,name2,score2,...]
-    let similarUserIds = result[1].filter((item,i) => i % 2 == 0); // 相似用户的id
-    let similarUserSimilarity = result[1].filter((item,i) => i % 2 != 0).map((strNum)=>parseFloat(strNum)); // 相似用户的相似度
+    let similarUserIds = result[1].filter((item, i) => i % 2 == 0); // 相似用户的id
+    let similarUserSimilarity = result[1].filter((item, i) => i % 2 != 0).map((strNum) => parseFloat(strNum)); // 相似用户的相似度
     let similarUserVectors = await this.getUserVecotr(similarUserIds); // 相似用户的vector
     let itemScoreResult = {}; // 保存评分结果 {item1:[89,0.8],item2:43}
 
@@ -89,13 +89,13 @@ class Recommender {
       let finalScore = itemScoreResult[itemId][0] / itemScoreResult[itemId][1]; // 用于修正 有很多相似度低的人评分
       finalResult.push(finalScore, itemId);
     }
-    this.logger.log(`更新推荐 ${userId} `,finalResult)
+    this.logger.log(`更新推荐 ${userId} `, finalResult)
     return this.saveItemScore(userId, finalResult);
   }
   async updateSimilarity(userId) {
     // 获取user所有item
     let curUserVector = await this.getUserVecotr(userId);
-    if(curUserVector == null){ // 没有item
+    if (curUserVector == null) { // 没有item
       return;
     }
     let itemKeys = Object.keys(curUserVector);
@@ -107,7 +107,7 @@ class Recommender {
         ratedSameItemUserSet.add(ratedUserId)
     }
     ratedSameItemUserSet.delete(userId); // 去掉自己
-    if(ratedSameItemUserSet.size == 0){ // 没有相似的user
+    if (ratedSameItemUserSet.size == 0) { // 没有相似的user
       return;
     }
     let ratedSameItemUsers = Array.from(ratedSameItemUserSet);
@@ -117,18 +117,18 @@ class Recommender {
       let similarity = this.calcSimilarity(curUserVector, userVectors[i]);// 计算相似度
       result.push(similarity, ratedSameItemUsers[i]) // [score,name]
     }
-    this.logger.log(`更新相似度 ${userId} `,result)
+    this.logger.log(`更新相似度 ${userId} `, result)
     return this.saveSimilarityResult(userId, result); // 保存结果
   }
-  mergeSimilarityOptions(options){
-    return Object.assign({},this.similarityOptions,options);
+  mergeSimilarityOptions(options) {
+    return Object.assign({}, this.similarityOptions, options);
   }
-  mergeRecommendOptions(options){
-    return Object.assign({},this.recommendOptions,options);
+  mergeRecommendOptions(options) {
+    return Object.assign({}, this.recommendOptions, options);
   }
-  async getSimilarUsersFromCache(userId,options={}) { // 获取相似的user
+  async getSimilarUsersFromCache(userId, options = {}) { // 获取相似的user
     options = this.mergeSimilarityOptions(options);
-    let users = await this.dataAccessor.getSimilarUsers(userId,options);// 内部调用的options一定有值
+    let users = await this.dataAccessor.getSimilarUsers(userId, options);// 内部调用的options一定有值
     // if (users == null) {
     //   this.logger.log(`${userId} 相似user为0`)
     //   return this.updateSimilarity(userId)
@@ -136,9 +136,9 @@ class Recommender {
     // }
     return users;
   }
-  async getRecommendedItemsFromCache(userId,options={}) {// 获取推荐的item
+  async getRecommendedItemsFromCache(userId, options = {}) {// 获取推荐的item
     options = this.mergeRecommendOptions(options);
-    let items = await this.dataAccessor.getRecommendedItems(userId,options);
+    let items = await this.dataAccessor.getRecommendedItems(userId, options);
     // if (items == null) {
     //   this.logger.log(`${userId} 推荐item为0`)
     //   return this.updateRecommendations(userId)
@@ -153,7 +153,7 @@ class Recommender {
   'loadDataSet,saveItemScore,saveSimilarityResult,getUserVecotr,getItemVector'
     .split(',')
     .forEach((method) => {
-      target[method] = function(...args){
+      target[method] = function (...args) {
         return this.dataAccessor[method](...args);
       }
     })

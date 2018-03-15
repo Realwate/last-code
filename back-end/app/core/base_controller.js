@@ -6,22 +6,24 @@ class BaseController extends Controller {
     super(ctx);
     this.service = ctx.service[this.serviceName];
   }
-  get serviceName(){
+  get serviceName() {
     throw Error('unsuport operation!');
   }
-  get loggedInUserId(){
+  get loggedInUserId() {
     return this.ctx.request.loggedInUserId;
   }
-  get body(){
+  get body() {
     return this.ctx.request.body;
   }
-  get page(){
-    return{
-      offset: this.ctx.query.offset || this.app.config.system.api.offset,
-      limit: this.ctx.query.limit || this.app.config.system.api.limit,
+  get page() {
+    let pageNum = Number(this.ctx.query.pageNum) || 0;
+    let limit = Number(this.ctx.query.limit) || this.app.config.system.api.limit;
+    return {
+      offset: pageNum * limit,
+      limit
     }
   }
-  getService(name){
+  getService(name) {
     return this.ctx.service[name];
   }
   success(data) {

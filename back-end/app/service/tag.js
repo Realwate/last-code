@@ -10,8 +10,10 @@ class TagService extends Service {
     return 'Tag'
   }
 
-  async getTagDetail(tagId, userId) {
+  async getTagDetail(tagId, userId, page) {
     let tag = await this.dao.findOne({
+      subQuery: false,
+      ...page,
       where: { id: tagId },
       include: [
         {
@@ -24,13 +26,13 @@ class TagService extends Service {
         }
       ]
     });
-    if(tag == null){
+    if (tag == null) {
       return null;
     }
-    let [res] = await this.rawQuery(
-      'select count(*) as num from user_follow_tag_relation where tag_id=? and user_id=?',
+    let [row] = await this.rawQuery(
+      ' select count(*) as num from user_follow_tag_relation where tag_id=? and user_id=?',
       tagId, userId);
-    let hasFollowed = res.num > 0;
+    let hasFollowed = row.num > 0;
     return this.jsonModel(tag, { hasFollowed });
   }
 

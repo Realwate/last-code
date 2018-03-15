@@ -16,7 +16,7 @@ class TimelineService extends Service {
       return this.getService('question').getEntryQuestions(null, page);
     }
     let tagIds = followedTags.map((tag) => tag.id);
-    let sql = `select distinct question_id from question_tag_relation
+    let sql = ` select distinct question_id from question_tag_relation
     where tag_id in ${this.constructWhere(tagIds)} limit ${page.limit} offset ${page.offset};`;
     let questionIds = (await this.rawQuery(sql)).map((obj) => obj.question_id);
     if (questionIds.length == 0) {
@@ -28,8 +28,8 @@ class TimelineService extends Service {
     // page[offset,limit) 转换 options [start,count)
     let questionIds = await this.recommender
       .getRecommendedItemsFromCache(userId, { start: page.offset, count: page.limit });
-    if (questionIds == null) {
-      return this.getRecentItem(userId);
+    if (questionIds == null && page.offset === 0) {
+      return this.getRecentItem(userId, page);
     }
     return this.getQuestionByIds(questionIds);
   }

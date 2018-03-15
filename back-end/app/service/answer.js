@@ -25,9 +25,11 @@ class AnswerService extends Service {
   }
   async create(userId, answer) {
     let user = await this.validateUser(userId);
+    let question = await this.getService('question').findById(answer.question_id);
     this.merge(answer, { user_id: userId });
     answer = await super.create(answer);
     user.increment('answer_count', { by: 1 });
+    question.increment('answer_count', { by: 1 });
 
     // 更新 矩阵
     this.getService('system').saveBehaviorData(userId, answer.question_id, this.app.config.behavior.answer);

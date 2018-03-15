@@ -67,14 +67,14 @@ describe('import data', () => {
       fs.writeFileSync(fileName, JSON.stringify({ userModelMap, tagModelMap }));
     }
   })
-  it.only('create question and answer success', async () => {
+  it('create question and answer success', async () => {
     let ans = [];
     for (let question of questions) {
       if (!question.answer) {
         continue
       }
       let randUsers = getRandomUser(ANSWER_COUNT + 1).map(name => userModelMap[name]);
-      let tags = question.tags.map((tagName) => { return {id: tagModelMap[tagName]} });
+      let tags = question.tags.map((tagName) => { return { id: tagModelMap[tagName] } });
 
       let createdQues = await questionService.create(randUsers[0], {
         title: question.title,
@@ -99,7 +99,7 @@ describe('import data', () => {
     await app.runSchedule('update_recommend');
     let userName = getRandomUser(1)[0];
     let userId = userModelMap[userName];
-    let items = await timelineService.getRecommendedItem(userId)
+    let items = await timelineService.getRecommendedItem(userId, { offset: 0, limit: 100 })
     console.log('end')
   });
   it('return latest items ', async () => {
