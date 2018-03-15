@@ -23,7 +23,7 @@ body {
   background-size: cover;
 }
 
-ul, li {
+li {
   list-style: none;
 }
 
@@ -240,5 +240,8 @@ $avatar-px: 24 28 40 60 140;
 .highlight-text{
   background: rgba(255,255,0,0.5);
 }
-
+.answer-editor .el-textarea__inner {
+  border: none;
+  min-height: 200px !important;
+}
 

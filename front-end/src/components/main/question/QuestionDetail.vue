@@ -28,7 +28,7 @@
       </div>
       <div class="question-detail section-block">
         <vote :voteCount="question.voteCount"></vote>
-        <div class="content-wrapper" v-html="question.content"></div>
+        <div class="content-wrapper" v-highlight v-html="question.content"></div>
       </div>
       <div class="answer-area">
         <h4 class="area-title">
@@ -36,7 +36,7 @@
         </h4>
 
         <ul v-if="question.answers.length > 0">
-          <li class="section-block" v-for="answer in question.answers">
+          <li class="section-block" v-highlight v-for="answer in question.answers">
             <vote :voteCount="answer.voteCount"></vote>
             <div class="content-wrapper">
               <div v-html="answer.content"></div>
@@ -178,6 +178,7 @@
 
   .content-wrapper {
     margin-left: 70px;
+    padding-bottom: 20px;
     font-size: 14px;
   }
 

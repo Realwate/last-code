@@ -43,7 +43,6 @@ function debounceFn(fn, t = 100) {
       executeFn(args);
     }
   }
-
 }
 
 function throttleFn(fn, t = 200) {
@@ -83,7 +82,7 @@ function scrollObservable() {
     .filter((positions) => {
       return isScrollingDown(positions) && isScrollExpectedPercent(positions[1])
     })
-    // .do(() => console.log('scroll expected'))
+  // .do(() => console.log('scroll expected'))
   let subject = new Rx.Subject();
   return source.multicast(subject).refCount();
 }
@@ -108,5 +107,6 @@ function scrollRequest({request, beforestart, onload}) {
 
 
 export default {
-  getCookie, setCookie, sleep, throttleFn, scrollRequest
+  getCookie, setCookie, sleep,
+  throttleFn, debounceFn, scrollRequest
 }
