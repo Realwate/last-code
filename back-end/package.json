@@ -28,6 +28,7 @@
     "node": ">=8.9.0"
   },
   "scripts": {
+    "import": "node ./import/importQuestion.js",
     "windows": "pm2 start server.js",
     "start": "egg-scripts start --daemon",
     "stop": "egg-scripts stop",
