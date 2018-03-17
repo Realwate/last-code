@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 
 const fileName = path.join(__dirname, './import.json')
-const userNames = 'Admin,Jack,Mike,Rose,Peter,Tom,Lucy,Lily,Momo,August'.split(',');
+const userNames = 'Admin,Jack,Mike,Rose,Peter,Tom,Lucy,Lily,Momo,August,Tony,Faker,Peace,Maya'.split(',');
 let tagNames = new Set();
 for (let question of questions) { // 记录tagName
   for (let tagName of question.tags) {

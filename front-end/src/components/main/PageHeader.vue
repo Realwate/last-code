@@ -18,9 +18,9 @@
                 <el-button type="primary" size="small" @click="ask">提问</el-button>
               </li>
               <li class="nav-item notification">
-                <el-badge :value="notificationCount" :max="10">
-                  <i class="fa fa-bell" @click="showNotification"></i>
-                </el-badge>
+                <!--<el-badge :value="notificationCount" :max="10">-->
+                  <!--<i class="fa fa-bell" @click="showNotification"></i>-->
+                <!--</el-badge>-->
               </li>
               <li class="nav-item menu">
                 <el-dropdown trigger="click">
