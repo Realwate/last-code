@@ -9,16 +9,16 @@ export default {
     }
   },
   methods: {
-    initRequestByPage({beforestart, onload, datasetKey, request}) {
+    initRequestByPage({beforestart, onload, datasetKey, request, adapter}) {
       this.page.pageNum = 0;
       let datasetFn = datasetKey;
       if (typeof datasetFn !== 'function') {
         datasetFn = () => datasetKey;
       }
       this[datasetFn()] = [];
-      this.requestSub && this.requestSub.unsubscribe();
+      this.requestSubscription && this.requestSubscription.unsubscribe();
 
-      this.requestSub = this.$util.scrollRequest({
+      this.requestSubscription = this.$util.scrollRequest({
         request: request.bind(this, this.page),
         beforestart: () => {
           beforestart && beforestart();
@@ -27,13 +27,15 @@ export default {
           onload && onload()
         }
       }).subscribe((items) => {
+        if (adapter) {
+          items = adapter(items)
+        }
         this[datasetFn()].push(...items);
         this.page.pageNum++;
       })
     }
   },
   created() {
-
   },
   beforeDestroy() {
     this.requestSubscription && this.requestSubscription.unsubscribe();

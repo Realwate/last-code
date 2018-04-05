@@ -64,9 +64,6 @@
       this.$store.dispatch('ChangeNavHeader');
       this.changeTab();
     },
-    destroyed() {
-      this.requestSub.unsubscribe();
-    },
     components: {
       TimelineEntry, TimelineSidebar
     },

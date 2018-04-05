@@ -126,19 +126,19 @@ export default {
   updateUserProfile(userId, user) {
     return postApi(`/api/user/${userId}`, user, 'patch');
   },
-  getUserQuestion(userId,params) {
+  getUserQuestion(userId, params) {
     return getApi(`/api/user/${userId}/question${addQueryString(params)}`);
   },
-  getUserAnswer(userId,params) {
+  getUserAnswer(userId, params) {
     return getApi(`/api/user/${userId}/answer${addQueryString(params)}`);
   },
   getUserFollow(userId) {
     return getApi(`/api/user/${userId}/following`);
   },
-  getFollowingUsers(userId,params) {
+  getFollowingUsers(userId, params) {
     return getApi(`/api/user/${userId}/following-users${addQueryString(params)}`);
   },
-  getFollowingQuestions(userId,params) {
+  getFollowingQuestions(userId, params) {
     return getApi(`/api/user/${userId}/following-questions${addQueryString(params)}`);
   },
   addUserFollower(userId) {
@@ -156,15 +156,22 @@ export default {
   addAnswer(params) {
     return postApi(`/api/answer`, params);
   },
-  searchQuestion(keywords,params) {
-    params = Object.assign({keywords},params)
+  searchQuestion(keywords, params) {
+    params = Object.assign({keywords}, params)
     return getApi(`/api/question/query${addQueryString(params)}`);
   },
   searchTag(keywords, params) {
     params = Object.assign({keywords}, params)
     return getApi(`/api/tag/query${addQueryString(params)}`);
   },
-  addViews(questionId) {
+  addViews(questionId) { // 添加浏览量
     return postApi(`/api/question/${questionId}/views`);
   },
+  getNotifications(params) {
+    return getApi(`/api/notification${addQueryString(params)}`);
+  },
+  updateNotification(id, params) {
+    return postApi(`/api/notification/${id}`, params, 'patch');
+  },
+
 }

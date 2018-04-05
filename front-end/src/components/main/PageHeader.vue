@@ -18,9 +18,9 @@
                 <el-button type="primary" size="small" @click="ask">提问</el-button>
               </li>
               <li class="nav-item notification">
-                <!--<el-badge :value="notificationCount" :max="10">-->
-                  <!--<i class="fa fa-bell" @click="showNotification"></i>-->
-                <!--</el-badge>-->
+                <el-badge :value="loggedInUser.notificationCount" :max="99">
+                  <i class="el-icon-bell" @click="toNotification"></i>
+                </el-badge>
               </li>
               <li class="nav-item menu">
                 <el-dropdown trigger="click">
@@ -53,7 +53,6 @@
       return {
         searchFocus: false,
         keywords: "",
-        notificationCount: 99
       }
     },
     computed: {
@@ -82,7 +81,8 @@
       search() {
         this.$router.push({name: "questionSearch", query: {keywords: this.keywords}})
       },
-      showNotification() {
+      async toNotification() {
+        this.$router.push({name: "userNotification"})
       },
       created(){
       }
@@ -100,9 +100,6 @@
     left: 0;
     right: 0;
     z-index: 2001;
-  }
-  .notification{
-    margin-right: 15px;
   }
   .main-header {
     height: 60px;

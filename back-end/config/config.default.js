@@ -92,7 +92,7 @@ module.exports = appInfo => {
     api: {     // api默认分页
       limit: 10
     },
-    maxAge: 1  // token 一天
+    maxAge: 3  // token 一天
 
   }
   return config;

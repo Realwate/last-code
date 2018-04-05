@@ -57,4 +57,7 @@ module.exports = app => {
   router.get('/api/timeline/recent', app.controller.timeline.getRecentItem);
   router.get('/api/timeline/hot', app.controller.timeline.getHottestItem);
 
+  // notification
+  router.get('/api/notification', app.controller.notification.getNotifications);
+  router.patch('/api/notification/:notificationId', app.controller.notification.updateViewed);
 };

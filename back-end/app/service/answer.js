@@ -31,6 +31,9 @@ class AnswerService extends Service {
     user.increment('answer_count', { by: 1 });
     question.increment('answer_count', { by: 1 });
 
+    // 添加回答推送通知
+    this.getService('notification').addAnswerCreateMsg(question,user,answer.id);
+
     // 更新 矩阵
     this.getService('system').saveBehaviorData(userId, answer.question_id, this.app.config.behavior.answer);
     return this.jsonModel(answer, { author: user });

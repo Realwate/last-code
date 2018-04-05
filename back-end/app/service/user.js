@@ -54,6 +54,8 @@ class UserService extends Service {
     users = this.jsonModel(users);
     for (let user of users) {  // 添加 hasFollowed
       if (user.id == loggedInUserId) {
+        // 自己添加 notificationCount
+        user.notificationCount = await this.getService('notification').getCount(loggedInUserId);
         continue;
       }
       user.hasFollowed = !!followedMap[user.id];

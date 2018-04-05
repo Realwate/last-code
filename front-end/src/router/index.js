@@ -17,6 +17,7 @@ import TagManagement from '@/components/main/tag/TagManagement'
 
 import UserProfile from '@/components/main/profile/UserProfile'
 import UserSetting from '@/components/main/profile/UserSetting'
+import UserNotification from '@/components/main/profile/UserNotification'
 
 // const UserProfile = () => import(/* webpackChunkName: "profile" */ '@/components/main/profile/UserProfile')
 
@@ -42,6 +43,7 @@ let routes = [
 
       {path: 'profile/:userId/activities', component: UserProfile, name: 'userProfile',props:true},
       {path: 'profile/edit', component: UserSetting, name: 'userSetting'},
+      {path: 'notifications', component: UserNotification, name: 'userNotification'},
     ],
     meta: {requiresAuth: true}
   },
