@@ -1,5 +1,8 @@
 <template>
   <div class="main-panel container pd20">
+    <div class="empty-text" v-if="notifyItems.length == 0">
+      还没有任何通知~
+    </div>
     <div class="notify-list">
       <div v-for="notifyItem in notifyItems" class="notify-item">
         <div class="notify-item-time">
@@ -62,12 +65,12 @@
 
 <style scoped lang="scss">
   .notify-item {
-    border-radius: 3px;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .notify-item-time {
+    border-bottom: 1px solid #e5e5e5;
+    padding-left: 5px;
   }
 
   .notify-item-content {
@@ -75,7 +78,7 @@
   }
 
   .highlight {
-    background: #f6f6f6;
+    background: #f9f9f9;
     .link {
       font-weight: bold;
     }

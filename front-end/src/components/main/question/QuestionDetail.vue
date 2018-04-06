@@ -81,7 +81,6 @@
   export default {
     data() {
       return {
-        timer: null,
         question: {
           creator: {},
           answers: []
@@ -119,12 +118,7 @@
       this.$store.dispatch('ChangeNavHeader')
       let {questionId} = this.$route.params;
       this.question = await this.$api.getQuestion(questionId);
-      this.timer = setTimeout(() => {
-        this.$api.addViews(questionId);
-      }, 6000)
-    },
-    destroyed() {
-      clearTimeout(this.timer);
+      this.$api.addViews(questionId);
     },
     components: {
       TagInlineList, Vote, AnswerEditor

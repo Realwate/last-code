@@ -1,14 +1,14 @@
 <template>
   <div class="answer-editor">
     <div class="editor-toolbar">
-      <i title="预览" class="el-icon-d-arrow-right" @click="togglePreview" v-show="!showPreview"></i>
-      <i title="返回" class="el-icon-d-arrow-left" @click="togglePreview" v-show="showPreview"></i>
+      <i title="预览" class="el-icon-view tool" @click="togglePreview" v-show="!showPreview"></i>
+      <i title="返回" class="el-icon-back tool" @click="togglePreview" v-show="showPreview"></i>
     </div>
     <el-input v-show="!showPreview"
               class="raw-text"
               type="textarea"
               @input="debounceInput"
-              placeholder="请输入内容">
+              placeholder="输入markdown内容，点击右上角预览">
     </el-input>
     <div v-show="showPreview" class="markdown-body markdown-text"
          v-highlight v-html="markdownText"></div>
@@ -59,6 +59,9 @@
     justify-content: flex-end;
     padding: 0 10px;
     align-items: center;
+  }
+  .editor-toolbar .tool{
+    cursor: pointer;
   }
 
   .markdown-text {

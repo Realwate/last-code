@@ -33,7 +33,17 @@ class NotificationService extends Service {
     notification.viewed = true;
     return notification.save();
   }
-  async addQuestionCreateMsg() {
+  async addQuestionCreateMsg(user, questionId) {
+    let userFollowers = await user.getFollower();
+    for (let follower of userFollowers) {
+      let followerId = follower.id
+      this.createNotification(followerId, { actor: user.id, target: questionId, action: ACTIONS.USER_CREATE_QUESTION })
+    }
+  }
+  async createNotification(userId, notifcation, size = 1) {
+    this.create({ userId, ...notifcation });
+    // 添加计数
+    this.app.Counter.incrby(this.key(userId), size);
   }
   async addAnswerCreateMsg(question, answerCreator, answerId) {
     // 创建答案 提醒的是问题 answerId暂不用
@@ -41,16 +51,11 @@ class NotificationService extends Service {
     let userFollowers = await answerCreator.getFollower();
     // set 去重
     let hasAddedSet = new Set()
-    let addNotification = (userId) => {
-      this.create({ userId, actor: answerCreator.id, target: question.id, action: ACTIONS.USER_CREATE_ANSWER });
-      // 添加计数
-      this.app.Counter.incrby(this.key(userId), hasAddedSet.size);
-    }
     // 用户关注 推送
     for (let follower of userFollowers) {
       let followerId = follower.id
       hasAddedSet.add(followerId);
-      addNotification(followerId)
+      this.createNotification(followerId, { actor: answerCreator.id, target: question.id, action: ACTIONS.USER_CREATE_ANSWER })
     }
     // 问题关注 推送
     for (let follower of questionFollowers) {
@@ -59,7 +64,7 @@ class NotificationService extends Service {
         continue;
       }
       hasAddedSet.add(followerId);
-      addNotification(followerId);
+      this.createNotification(followerId, { actor: answerCreator.id, target: question.id, action: ACTIONS.USER_CREATE_ANSWER });
     }
   }
   async getNotificationByUser(userId, page) {

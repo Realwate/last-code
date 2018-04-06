@@ -33,7 +33,7 @@
       <user-profile-activity @followingCountChange="followingCountChange"
                              :panel="panel" :viewingUserId="userId">
       </user-profile-activity>
-      <aside class="profile-sidebar panel">
+      <aside class="profile-sidebar panel hidden-xs-only">
         <div class="side-inner">
           <div> 关注了</div>
           <strong v-text="user.followingCount"></strong>

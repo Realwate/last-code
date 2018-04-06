@@ -11,7 +11,7 @@ class QuestionService extends Service {
   }
   get createRule() {
     return {
-      fields: ['title', 'content','user_id'],
+      fields: ['title', 'content', 'user_id'],
       rule: {
         title: [
           this.Validator.require('标题不能为空！'),
@@ -27,11 +27,11 @@ class QuestionService extends Service {
   }
   // 创建问题
   async create(userId, params) {
-    let user = await this.getService('user').findById(userId);
+    let user = await this.validateUser(userId);
     this.merge(params, { user_id: userId });
     let tagIds = params.tags.map(tag => tag.id);
     let question = await super.create(params);
-
+    this.getService('notification').addQuestionCreateMsg(user, question.id);
     for (let tagId of tagIds) {
       let tag = await this.getService('tag').findById(tagId);
       tag.increment('item_count', { by: 1 });
@@ -110,7 +110,7 @@ class QuestionService extends Service {
         { model: ctx.model.User, as: 'creator' },
       ]
     });
-    if(question == null){
+    if (question == null) {
       return null;
     }
     let follows = await this.rawQuery(

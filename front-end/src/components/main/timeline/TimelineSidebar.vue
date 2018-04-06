@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar hidden-sm-and-down">
+  <aside class="sidebar hidden-xs-only">
     <section class="sidebar-block shadow">
       <ul class="nav-list vertical">
         <router-link :to="{ name: 'userProfile',params:{userId:loggedInUserId},query: { panel: 'questions' }}" class="nav-item" tag="li"> 我的提问 </router-link>
@@ -58,7 +58,7 @@
 </script>
 <style scoped lang="scss">
   .sidebar {
-    width: 160px;
+    width: 168px;
     margin-left: 20px;
   }
   .sidebar-block {

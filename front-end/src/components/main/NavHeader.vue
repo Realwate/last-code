@@ -13,7 +13,7 @@
           </tag-inline-list>
         </div>
         <div v-else>
-          暂未关注任何标签，点击前往 <router-link class="link" :to="{name:'tagManagement'}">标签管理</router-link>
+          暂未关注任何标签，点击前往 <router-link class="link" :to="{name:'tagManagement',params: {activeName: 'all'}}">标签管理</router-link>
         </div>
       </div>
     </div>

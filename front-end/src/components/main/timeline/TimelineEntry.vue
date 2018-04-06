@@ -12,10 +12,10 @@
         </div>
         <div class="info">
           <div class="title-box">
-            <h1 class="title" @click="toQuestionDetail(question.id)"
-                v-html="$options.filters.highlightText(question.title,keywords)">
-
-            </h1>
+            <a class="title" target="_blank"
+               v-html="$options.filters.highlightText(question.title,keywords)"
+               :href="$router.resolve({name:'questionDetail',params:{questionId:question.id}}).href">
+            </a>
             <tag-inline-list :tags="question.tags"></tag-inline-list>
           </div>
           <ul class="list bottom-list">
@@ -86,6 +86,7 @@
     cursor: pointer;
     font-weight: normal;
     margin-right:10px;
+    color: inherit;
   }
   .title:hover{
     color: #0084ff;

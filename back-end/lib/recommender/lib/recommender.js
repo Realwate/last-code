@@ -87,6 +87,9 @@ class Recommender {
     let finalResult = []; // [score,name]
     for (let itemId of Object.keys(itemScoreResult)) {
       let finalScore = itemScoreResult[itemId][0] / itemScoreResult[itemId][1]; // 用于修正 有很多相似度低的人评分
+      if(finalScore <= 0){
+        continue; // 小于0不存储
+      }
       finalResult.push(finalScore, itemId);
     }
     this.logger.log(`更新推荐 ${userId} `, finalResult)
@@ -115,6 +118,9 @@ class Recommender {
     let result = [];
     for (let i = 0; i < ratedSameItemUsers.length; i++) {
       let similarity = this.calcSimilarity(curUserVector, userVectors[i]);// 计算相似度
+      if(similarity <= 0){
+        continue; // 小于0不存储
+      }
       result.push(similarity, ratedSameItemUsers[i]) // [score,name]
     }
     this.logger.log(`更新相似度 ${userId} `, result)

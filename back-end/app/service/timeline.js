@@ -29,7 +29,8 @@ class TimelineService extends Service {
     let questionIds = await this.recommender
       .getRecommendedItemsFromCache(userId, { start: page.offset, count: page.limit });
     if (questionIds == null && page.offset === 0) {
-      return this.getRecentItem(userId, page);
+      // return this.getRecentItem(userId, page);
+      return [];
     }
     return this.getQuestionByIds(questionIds);
   }

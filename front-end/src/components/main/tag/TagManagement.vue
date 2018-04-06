@@ -60,6 +60,10 @@
       },
     },
     created() {
+      let activeName = this.$route.params.activeName;
+      if(activeName){
+        this.activeName = activeName;
+      }
       this.toggleTag();
       this.$on('update:tag', ({tag, index}) => {
         this.$set(this.tags, index, tag)
