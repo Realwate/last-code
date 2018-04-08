@@ -17,7 +17,8 @@ class TimelineService extends Service {
     }
     let tagIds = followedTags.map((tag) => tag.id);
     let sql = ` select distinct question_id from question_tag_relation
-    where tag_id in ${this.constructWhere(tagIds)} limit ${page.limit} offset ${page.offset};`;
+    where tag_id in ${this.constructWhere(tagIds)} order by created_at desc
+    limit ${page.limit} offset ${page.offset};`;
     let questionIds = (await this.rawQuery(sql)).map((obj) => obj.question_id);
     if (questionIds.length == 0) {
       return [];
